@@ -50,6 +50,17 @@ class QASession:
 
 
 @dataclass
+class ReportSummary:
+    report_id: int
+    stock_code: str
+    stock_name: str
+    report_year: int
+    report_type: str
+    parse_status: str
+    title: str | None = None
+
+
+@dataclass
 class RouteDecision:
     use_sql: bool
     use_vector: bool
@@ -155,6 +166,31 @@ class QAPipeline:
             if not row:
                 raise ValueError(f"report_id not found: {report_id}")
         return QASession(report_id=report_id, company_name=row[0], report_year=row[1])
+
+    def list_reports(self) -> list[ReportSummary]:
+        with connect() as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT r.id, c.stock_code, c.stock_name, r.report_year,
+                       r.report_type, r.parse_status, r.title
+                FROM reports r
+                JOIN companies c ON c.id = r.company_id
+                ORDER BY r.report_year DESC, r.id DESC
+                """
+            )
+            rows = cur.fetchall()
+        return [
+            ReportSummary(
+                report_id=row[0],
+                stock_code=row[1],
+                stock_name=row[2],
+                report_year=row[3],
+                report_type=row[4],
+                parse_status=row[5],
+                title=row[6],
+            )
+            for row in rows
+        ]
 
     def ask(self, session: QASession, question: str) -> QAResponse:
         try:

@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Iterable
 
 from .config import QA_LLM_MODEL
-from .pipeline import QAPipeline
+from .pipeline import QAPipeline, ReportSummary
 
 if TYPE_CHECKING:
     from .pipeline import QASession, Turn
@@ -179,7 +179,7 @@ def print_banner(session: QASession, model: str, *, no_color: bool = False) -> N
     print(style.bold(style.cyan(_box_bottom(width))))
     print()
     print(style.dim("  命令"))
-    print(f"  {style.cyan('/report <id>')}  切换报告    {style.cyan('/history')}  查看历史")
+    print(f"  {style.cyan('/report [id]')}  切换报告    {style.cyan('/history')}  查看历史")
     print(f"  {style.cyan('/clear')}        清空上下文   {style.cyan('/help')}     显示帮助")
     print(f"  {style.cyan('/exit')}         退出")
     print(style.dim("─" * width))
@@ -261,6 +261,38 @@ def print_history(turns: list[Turn], *, no_color: bool = False) -> None:
         print()
 
 
+def print_report_list(
+    reports: list[ReportSummary],
+    current_report_id: int | None = None,
+    *,
+    no_color: bool = False,
+) -> None:
+    style = _Style(_use_color(no_color))
+    width = _term_width()
+
+    if not reports:
+        print_warn("数据库中暂无可用报告。", no_color=no_color)
+        print(style.dim("  请先运行 ingest 入库。"))
+        return
+
+    print(style.dim(f"  共 {len(reports)} 份报告"))
+    print(style.dim("─" * width))
+    for report in reports:
+        marker = " ← 当前" if report.report_id == current_report_id else ""
+        year_label = f"{report.report_year} {report.report_type}"
+        name = _truncate_display(report.stock_name, width - 28)
+        line = (
+            f"  #{report.report_id:<3} {report.stock_code}  "
+            f"{name}  {year_label}  {report.parse_status}{marker}"
+        )
+        if report.report_id == current_report_id:
+            print(style.bold(style.cyan(line)))
+        else:
+            print(line)
+    print(style.dim("─" * width))
+    print(style.dim("  切换报告: /report <id>"))
+
+
 def print_info(message: str, *, no_color: bool = False) -> None:
     style = _Style(_use_color(no_color))
     print(style.green(f"  ✓ {message}"))
@@ -329,12 +361,19 @@ def run_repl(report_id: int, *, no_color: bool = False) -> int:
             session.clear()
             print_info("已清空会话上下文。", no_color=no_color)
             continue
-        if user_input.startswith("/report "):
+        if user_input == "/report" or user_input.startswith("/report "):
+            parts = user_input.split(maxsplit=1)
+            if len(parts) == 1 or not parts[1].strip():
+                print_report_list(
+                    qa.list_reports(),
+                    session.report_id,
+                    no_color=no_color,
+                )
+                continue
             try:
-                _, rid_text = user_input.split(" ", 1)
-                rid = int(rid_text.strip())
+                rid = int(parts[1].strip())
             except ValueError:
-                print_warn("用法: /report <id>", no_color=no_color)
+                print_warn("用法: /report [id]", no_color=no_color)
                 continue
             try:
                 session = qa.load_session(rid)

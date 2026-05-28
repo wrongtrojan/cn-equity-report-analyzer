@@ -130,7 +130,8 @@ python -m pipeline.qa.cli --report-id 1
 
 | 命令 | 作用 |
 |------|------|
-| `/report <id>` | 切换报告 |
+| `/report` | 列出数据库中全部报告 |
+| `/report <id>` | 切换到指定报告 |
 | `/history` | 查看最近对话摘要 |
 | `/clear` | 清空会话上下文 |
 | `/help` | 帮助 |
