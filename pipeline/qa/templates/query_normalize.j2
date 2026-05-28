@@ -1,0 +1,50 @@
+请将用户问题标准化为 JSON，严格遵守 schema，禁止输出额外文本。
+
+Schema:
+{
+  "intent": "numeric | narrative | relational | hybrid",
+  "canonical_question": "string",
+  "report_year": 2025,
+  "entities": ["string"],
+  "section_keys": ["string"],
+  "sql_targets": {
+    "item_names": ["string"],
+    "period_labels": ["2025", "2024"],
+    "period_kinds": ["year"],
+    "stmt_types": ["kpi", "income"],
+    "period_granularity": "annual | quarterly | point_in_time | any"
+  },
+  "vector_query": "string",
+  "needs_previous_context": true
+}
+
+规则:
+1) 数值问法（多少/同比/金额/利润/收入）优先 numeric 或 hybrid。
+2) 解释问法（原因/为什么/如何）优先 narrative。
+3) 关系问法（股东/子公司/高管/关联方）优先 relational。
+4) 若问题依赖上下文（如“它”“那这个”），needs_previous_context=true，并结合最近对话补全实体。
+5) 若用户未明确年份，report_year可为空。
+6) vector_query 应可直接用于语义检索。
+7) 指标粒度：问"2025年/年度/全年"时 period_granularity=annual，period_kinds=["year"]，优先 stmt_types=["kpi","income"]，不要混入季度。
+8) 问"第一季度/二季度/Q1"时 period_granularity=quarterly，period_kinds=["quarter"]，period_labels 用 "2025Q1" 这类格式。
+9) 问"期末/余额/年末"时 period_granularity=point_in_time，period_kinds=["point_in_time"]。
+10) 同一指标可能有多个口径（KPI摘要/利润表/季度表），必须通过 period_granularity 和 stmt_types 区分。
+
+上下文:
+- report_id: {{ report_id }}
+- company_name: {{ company_name }}
+- report_year: {{ report_year }}
+- recent_turn_summaries:
+{% if recent_turn_summaries %}
+{% for t in recent_turn_summaries %}
+  - {{ t }}
+{% endfor %}
+{% else %}
+  - 无
+{% endif %}
+
+用户问题:
+{{ query }}
+
+只输出 JSON。
+

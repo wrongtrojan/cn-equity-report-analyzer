@@ -1,0 +1,1991 @@
+{
+  "generated_at": "2026-05-27T15:25:29+00:00",
+  "golden_file": "/home/trojan/workspace/dev/RE/pipeline/qa/eval/golden_questions.json",
+  "summary": {
+    "total": 23,
+    "auto_passed": 21,
+    "auto_warn": 2
+  },
+  "results": [
+    {
+      "id": "A1_annual_revenue",
+      "report_id": 1,
+      "query": "2025年营业总收入是多少",
+      "reference": {
+        "category": "granularity_annual",
+        "expected_granularity": "annual",
+        "expected_period_labels": [
+          "2025"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：16,067,741,039.51元（约160.68亿元），年度KPI口径"
+      },
+      "answer": "2025年营业总收入为16,067,741,039.51元。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]",
+        "[financial_statements p.76]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 营业总收入（元) = 16067741039.5100 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业总收入 = 16067741039.5100 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业总收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业收入 = 4531884934.7200 元",
+          "section_key": "financial_statements",
+          "page_num": 76,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 3,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A2_q1_revenue",
+      "report_id": 1,
+      "query": "2025年第一季度的营业总收入是多少",
+      "reference": {
+        "category": "granularity_quarterly",
+        "expected_granularity": "quarterly",
+        "expected_period_labels": [
+          "2025Q1"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：3,485,587,013.94元，2025Q1季度口径"
+      },
+      "answer": "2025年第一季度营业总收入为3,485,587,013.94元。",
+      "citations": [
+        "[quarterly_financials p.7]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年第一季度的营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "quarterly_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025Q1"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "2025年第一季度营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q1(季度) 营业总收入 = 3485587013.9400 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "营业总收入",
+            "period_label": "2025Q1",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A3_q2_revenue",
+      "report_id": 1,
+      "query": "2025年第二季度营业总收入是多少",
+      "reference": {
+        "category": "granularity_quarterly",
+        "expected_granularity": "quarterly",
+        "expected_period_labels": [
+          "2025Q2"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：3,370,780,510.96元，2025Q2"
+      },
+      "answer": "2025年第二季度营业总收入为3,370,780,510.96元。",
+      "citations": [
+        "[quarterly_financials p.7]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年第二季度营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "quarterly_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025Q2"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "2025年第二季度营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q2(季度) 营业总收入 = 3370780510.9600 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "营业总收入",
+            "period_label": "2025Q2",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A4_q3_revenue",
+      "report_id": 1,
+      "query": "2025年第三季度营业总收入是多少",
+      "reference": {
+        "category": "granularity_quarterly",
+        "expected_granularity": "quarterly",
+        "expected_period_labels": [
+          "2025Q3"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：4,732,581,590.06元，2025Q3"
+      },
+      "answer": "2025年第三季度营业总收入为4,732,581,590.06元。",
+      "citations": [
+        "[quarterly_financials p.7]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年第三季度营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "quarterly_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025Q3"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "2025年第三季度营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q3(季度) 营业总收入 = 4732581590.0600 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "营业总收入",
+            "period_label": "2025Q3",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A5_q4_revenue",
+      "report_id": 1,
+      "query": "2025年第四季度营业总收入是多少",
+      "reference": {
+        "category": "granularity_quarterly",
+        "expected_granularity": "quarterly",
+        "expected_period_labels": [
+          "2025Q4"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：4,478,791,924.55元，2025Q4"
+      },
+      "answer": "2025年第四季度营业总收入为4,478,791,924.55元。",
+      "citations": [
+        "[quarterly_financials p.7]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年第四季度营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "quarterly_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025Q4"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "2025年第四季度营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q4(季度) 营业总收入 = 4478791924.5500 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "营业总收入",
+            "period_label": "2025Q4",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A6_prior_year_revenue",
+      "report_id": 1,
+      "query": "2024年营业总收入是多少",
+      "reference": {
+        "category": "granularity_annual",
+        "expected_granularity": "annual",
+        "expected_period_labels": [
+          "2024"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：11,604,343,090.16元，2024年度"
+      },
+      "answer": "2024年营业总收入为11,604,343,090.16元。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]",
+        "[financial_statements p.76]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2024年营业总收入是多少",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "营业总收入"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2024"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2024年营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2024 营业总收入（元) = 11604343090.1600 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2024 一、营业总收入 = 11604343090.1600 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业总收入",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2024 一、营业收入 = 3842510553.9200 元",
+          "section_key": "financial_statements",
+          "page_num": 76,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业收入",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 3,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "A7_yoy_growth",
+      "report_id": 1,
+      "query": "2025年营业总收入同比增长多少",
+      "reference": {
+        "category": "granularity_annual",
+        "expected_granularity": "annual",
+        "min_evidence": 1,
+        "notes": "期望：38.46%"
+      },
+      "answer": "2025年营业总收入同比增长约38.46%。\n\n计算过程：2025年营业总收入为16,067,741,039.51元，2024年营业总收入为11,604,343,090.16元，同比增长率 = (16,067,741,039.51 - 11,604,343,090.16) / 11,604,343,090.16 ≈ 38.46%。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]",
+        "[financial_statements p.76]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年营业总收入同比增长多少",
+        "report_year": 2025,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025",
+            "2024"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年营业总收入同比增长率",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2024 营业总收入（元) = 11604343090.1600 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 营业总收入（元) = 16067741039.5100 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2024 一、营业总收入 = 11604343090.1600 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业总收入",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业总收入 = 16067741039.5100 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业总收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2024 一、营业收入 = 3842510553.9200 元",
+          "section_key": "financial_statements",
+          "page_num": 76,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业收入",
+            "period_label": "2024",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 5,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "B1_annual_net_profit",
+      "report_id": 1,
+      "query": "2025年归属于上市公司股东的净利润是多少",
+      "reference": {
+        "category": "metric_kpi",
+        "expected_granularity": "annual",
+        "expected_period_labels": [
+          "2025"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：12,084,594,947.22元，年度KPI"
+      },
+      "answer": "2025年归属于上市公司股东的净利润为12,084,594,947.22元。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年归属于上市公司股东的净利润是多少",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "归属于上市公司股东的净利润",
+            "净利润"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年归属于上市公司股东的净利润",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 归属于上市公司股东的净利润（元) = 12084594947.2200 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "归属于上市公司股东的净利润（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 归属于上市公司股东的扣除非经常性损益的净利润（元) = 11653886754.8900 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "归属于上市公司股东的扣除非经常性损益的净利润（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 1.归属于母公司股东的净利润 = 12084594947.2200 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "1.归属于母公司股东的净利润",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 1.持续经营净利润（净亏损以“-”号填列） = 12084594947.2200 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "1.持续经营净利润（净亏损以“-”号填列）",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 五、净利润（净亏损以“-”号填列） = 12084594947.2200 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "五、净利润（净亏损以“-”号填列）",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 5,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "B2_q1_net_profit",
+      "report_id": 1,
+      "query": "2025年第一季度净利润是多少",
+      "reference": {
+        "category": "metric_kpi",
+        "expected_granularity": "quarterly",
+        "expected_period_labels": [
+          "2025Q1"
+        ],
+        "min_evidence": 1,
+        "notes": "期望：2,715,030,716.13元，2025Q1"
+      },
+      "answer": "2025年第一季度归属于上市公司股东的净利润为2,715,030,716.13元。\n\n归属于上市公司股东的扣除非经常性损益的净利润为2,698,447,664.45元。",
+      "citations": [
+        "[quarterly_financials p.7]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年第一季度净利润是多少",
+        "report_year": 2025,
+        "entities": [
+          "净利润"
+        ],
+        "section_keys": [
+          "quarterly_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "净利润",
+            "归属于上市公司股东的净利润"
+          ],
+          "period_labels": [
+            "2025Q1"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "2025年第一季度净利润",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q1(季度) 归属于上市公司股东的净利润 = 2715030716.1300 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "归属于上市公司股东的净利润",
+            "period_label": "2025Q1",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/quarter] 2025Q1(季度) 归属于上市公司股东的扣除非经常性损益的净利润 = 2698447664.4500 元",
+          "section_key": "quarterly_financials",
+          "page_num": 7,
+          "score": 1.15,
+          "metadata": {
+            "item_name": "归属于上市公司股东的扣除非经常性损益的净利润",
+            "period_label": "2025Q1",
+            "period_kind": "quarter",
+            "stmt_type": "kpi",
+            "table_type_guess": "quarterly_financials",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 2,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "B3_operating_cashflow",
+      "report_id": 1,
+      "query": "2025年经营活动产生的现金流量净额是多少",
+      "reference": {
+        "category": "metric_kpi",
+        "expected_granularity": "annual",
+        "min_evidence": 1,
+        "notes": "期望：-10,222,245,645.14元（负数）"
+      },
+      "answer": "2025年经营活动产生的现金流量净额为 -10,222,245,645.14 元。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.145]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年经营活动产生的现金流量净额是多少",
+        "report_year": 2025,
+        "entities": [
+          "经营活动产生的现金流量净额"
+        ],
+        "section_keys": [
+          "现金流量表"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "经营活动产生的现金流量净额"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年经营活动产生的现金流量净额",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 经营活动产生的现金流量净额（元） = -10222245645.1400 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "经营活动产生的现金流量净额（元）",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[cashflow/year] 2025 经营活动产生的现金流量净额 = -10222245645.1400 元",
+          "section_key": "financial_statements",
+          "page_num": 145,
+          "score": 1.0899999999999999,
+          "metadata": {
+            "item_name": "经营活动产生的现金流量净额",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "cashflow",
+            "table_type_guess": "cashflow_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 2,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "B4_eps",
+      "report_id": 1,
+      "query": "2025年基本每股收益是多少",
+      "reference": {
+        "category": "metric_income",
+        "expected_granularity": "annual",
+        "min_evidence": 1,
+        "notes": "期望：0.7650元/股"
+      },
+      "answer": "2025年基本每股收益为0.7650元/股。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年基本每股收益是多少",
+        "report_year": 2025,
+        "entities": [
+          "基本每股收益"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "基本每股收益",
+            "（一）基本每股收益"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年基本每股收益",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 基本每股收益（元/股） = 0.7650 元/股",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "基本每股收益（元/股）",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 （一）基本每股收益 = 0.7650 元/股",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "（一）基本每股收益",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 2,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "B5_rd_ratio",
+      "report_id": 1,
+      "query": "2025年研发投入占营业总收入比例是多少",
+      "reference": {
+        "category": "metric_ratio",
+        "min_evidence": 1,
+        "notes": "期望：6.64%（比例，不是金额）"
+      },
+      "answer": "2025年研发投入占营业总收入比例为6.6400%。",
+      "citations": [
+        "[mda p.16]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年研发投入占营业总收入比例是多少",
+        "report_year": 2025,
+        "entities": [
+          "研发投入",
+          "营业总收入"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "研发投入",
+            "研发投入金额",
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入",
+            "研发投入占营业总收入比例",
+            "研发投入占营业收入比例"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance",
+            "operational"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年研发投入占营业总收入比例",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[operational/year] 2025 研发投入占营业总收入比例 = 6.6400 %",
+          "section_key": "mda",
+          "page_num": 16,
+          "score": 0.7799999999999998,
+          "metadata": {
+            "item_name": "研发投入占营业总收入比例",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "operational",
+            "table_type_guess": "rd_investment_summary",
+            "is_ratio": true
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[operational/year] 2025 资本化研发支出占研发投入的比例 = 0.0000 %",
+          "section_key": "mda",
+          "page_num": 16,
+          "score": 0.7799999999999998,
+          "metadata": {
+            "item_name": "资本化研发支出占研发投入的比例",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "operational",
+            "table_type_guess": "rd_investment_summary",
+            "is_ratio": true
+          }
+        }
+      ],
+      "evidence_count": 2,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "C1_cash_end",
+      "report_id": 1,
+      "query": "2025年末货币资金是多少",
+      "reference": {
+        "category": "point_in_time",
+        "expected_granularity": "point_in_time",
+        "min_evidence": 1,
+        "notes": "期望：124,282,846,610.66元，期末时点"
+      },
+      "answer": "2025年末货币资金为124,282,846,610.66元。",
+      "citations": [
+        "[financial_statements p.69]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年末货币资金是多少",
+        "report_year": 2025,
+        "entities": [
+          "货币资金"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "货币资金"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "point_in_time"
+          ],
+          "stmt_types": [
+            "balance",
+            "kpi"
+          ],
+          "period_granularity": "point_in_time"
+        },
+        "vector_query": "2025年末货币资金",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[balance/point_in_time] 2025(时点) 货币资金 = 124282846610.6600 元",
+          "section_key": "financial_statements",
+          "page_num": 69,
+          "score": 0.96,
+          "metadata": {
+            "item_name": "货币资金",
+            "period_label": "2025",
+            "period_kind": "point_in_time",
+            "stmt_type": "balance",
+            "table_type_guess": "balance_sheet",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "C2_total_assets_end",
+      "report_id": 1,
+      "query": "2025年末资产总计是多少",
+      "reference": {
+        "category": "point_in_time",
+        "expected_granularity": "point_in_time",
+        "min_evidence": 1,
+        "notes": "期望：392,933,744,976.20元"
+      },
+      "answer": "2025年末资产总计为392,933,744,976.20元。",
+      "citations": [
+        "[financial_statements p.69]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年末资产总计是多少",
+        "report_year": 2025,
+        "entities": [
+          "资产总计"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "资产总计",
+            "资产总额"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "point_in_time"
+          ],
+          "stmt_types": [
+            "balance",
+            "kpi"
+          ],
+          "period_granularity": "point_in_time"
+        },
+        "vector_query": "2025年末资产总计",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[balance/point_in_time] 2025(时点) 资产总计 = 392933744976.2000 元",
+          "section_key": "financial_statements",
+          "page_num": 69,
+          "score": 0.96,
+          "metadata": {
+            "item_name": "资产总计",
+            "period_label": "2025",
+            "period_kind": "point_in_time",
+            "stmt_type": "balance",
+            "table_type_guess": "balance_sheet",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "C3_goodwill_end",
+      "report_id": 1,
+      "query": "2025年末商誉是多少",
+      "reference": {
+        "category": "point_in_time",
+        "expected_granularity": "point_in_time",
+        "min_evidence": 1,
+        "notes": "期望：2,946,250,105.99元"
+      },
+      "answer": "2025年末商誉为2,946,250,105.99元。",
+      "citations": [
+        "[financial_statements p.69]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年末商誉是多少",
+        "report_year": 2025,
+        "entities": [
+          "商誉"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "商誉"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "point_in_time"
+          ],
+          "stmt_types": [
+            "balance",
+            "kpi"
+          ],
+          "period_granularity": "point_in_time"
+        },
+        "vector_query": "2025年末商誉",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[balance/point_in_time] 2025(时点) 商誉 = 2946250105.9900 元",
+          "section_key": "financial_statements",
+          "page_num": 69,
+          "score": 0.96,
+          "metadata": {
+            "item_name": "商誉",
+            "period_label": "2025",
+            "period_kind": "point_in_time",
+            "stmt_type": "balance",
+            "table_type_guess": "balance_sheet",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 1,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "D1_revenue_alias",
+      "report_id": 1,
+      "query": "2025年营收是多少",
+      "reference": {
+        "category": "alias",
+        "expected_granularity": "annual",
+        "min_evidence": 1,
+        "notes": "期望：同A1，16,067,741,039.51元；测试「营收→营业总收入」别名"
+      },
+      "answer": "2025年营业总收入为16,067,741,039.51元。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]",
+        "[financial_statements p.76]"
+      ],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2025年营收是多少",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业收入",
+            "营业总收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年营业收入",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 营业总收入（元) = 16067741039.5100 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业总收入 = 16067741039.5100 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业总收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业收入 = 4531884934.7200 元",
+          "section_key": "financial_statements",
+          "page_num": 76,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        }
+      ],
+      "evidence_count": 3,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "E1_chairman",
+      "report_id": 1,
+      "query": "公司董事长是谁",
+      "reference": {
+        "category": "relational",
+        "min_evidence": 1,
+        "notes": "期望：其实"
+      },
+      "answer": "年报未披露",
+      "citations": [],
+      "normalized": {
+        "intent": "relational",
+        "canonical_question": "公司董事长是谁",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "directors"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "董事长"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "point_in_time"
+          ],
+          "stmt_types": [
+            "balance",
+            "kpi"
+          ],
+          "period_granularity": "point_in_time"
+        },
+        "vector_query": "东方财富信息股份有限公司董事长",
+        "needs_previous_context": false
+      },
+      "evidence": [],
+      "evidence_count": 0,
+      "auto_check": {
+        "passed": false,
+        "issues": [
+          "evidence count 0 < min_evidence 1"
+        ]
+      }
+    },
+    {
+      "id": "E2_stock_code",
+      "report_id": 1,
+      "query": "公司股票代码是多少",
+      "reference": {
+        "category": "relational",
+        "min_evidence": 1,
+        "notes": "期望：300059"
+      },
+      "answer": "300059",
+      "citations": [
+        "[financial_statements]",
+        "[mda]"
+      ],
+      "normalized": {
+        "intent": "narrative",
+        "canonical_question": "东方财富信息股份有限公司的股票代码是多少？",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "公司基本信息"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "股票代码"
+          ],
+          "period_labels": [],
+          "period_kinds": [],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "any"
+        },
+        "vector_query": "东方财富信息股份有限公司的股票代码",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富信息股份有限公司（以下简称“公司”或“本公司”）的前身系上海东财信息技术有限公司，本公司于2007年12月 20日改制为股份有限公司，2008年1月7日由上海东财信息技术股份有限公司更名为东方财富信息股份有限公司。本公司的控股股东、实际控制人为其实先生。本公司注册地址为上海市嘉定区宝安公路2999号1幢，经营地址为上海市徐汇区宛平南路88号东方财富大厦。\n\n根据本公司2009年第二次临时股东大会决议，并经中国证监会《关于核准东方财富信息股份有限公司首次公开发行股票并在创业板上市的批复》（证监许可[2010]249号）核准，公司向社会公开发行人民币普通股35,000,000股。经深圳证券交易所《关于东方财富信息股份有限公司人民币普通股股票在创业板上市的通知》（深证上[2010]89号）同意，本公司发行的人民币普通股股票在深圳证券交易所创业板上市，股票简称“东方财富”，股票代码“300059”。\n\n公司致力于构建人与财富的金融生态圈，提供财经、证券、基金、期货、社交服务等一站式互联网财富管理服务，为用户创造更多价值。本公司主营业务有证券业务、金融电子商务服务业务、金融数据服务业务等。\n\n本财务报表业经本公司董事会于 2026年 3月 18日决议批准报出。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.7803747450635307,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.21962525493646934
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "编制单位：东方财富信息股份有限公司\n\n2025 年 12 月 31 日  \n单位：元\n \n\n法定代表人：其实  \n主管会计工作负责人：程慧  \n会计机构负责人：徐翘楚",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.7085698594367722,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.2914301405632278
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "审计报告正文\n\n东方财富信息股份有限公司全体股东：",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.6958785004833055,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.30412149951669454
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富是中国领先的互联网财富管理综合运营商，经过多年发展和积累，形成了自身核心竞争力优势，为公司未来可持续健康发展奠定了坚实基础。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.6870451533117629,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.31295484668823714
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "2024年4月 8日，公司召开 2023年年度股东大会，审议通过《关于〈东方财富信息股份有限公司 2024 年限制性股票激励计划（草案）〉及其摘要的议案》等议案。本公司向激励对象授予的限制性股票数量为 4,000.00万股，其中首次授予限制性股票数量 3,800.00万股，预留授予限制性股票数量 200.00万股。\n\n2024年4月 12日，公司召开第六届董事会第十次会议审议与第六届监事会第八次会议，审议通过《关于向激励对象首次授予限制性股票的议案》，以 2024年 4月12日为首次授予日，以 13.75元/股的价格向符合授予条件的 869名激励对象授予3,800.00万股第二类限制性股票。\n\n2025年3月 13日，公司召开第六届董事会第十六次会议与第六届监事会第十三次会议，审议通过《关于向激励对象授予2024年限制性股票激励计划预留限制性股票的议案》，确定授予日为 2025年3月13日，以23.79元/股的授予价格向符合授予条件的 198名激励对象授予200.00万股限制性股票。\n\n2025年4月 24日，公司召开第六届董事会第十七次会议与第六届监事会第十四次会议，审议通过《关于 2024年限制性股票激励计划首次授予限制性股票第一个归属期归属条件成就的议案》，同意为符合条件的 822名激励对象办理1,849.67万股限制性股票归属事宜，在资金缴纳过程中，因个人原因，1名首次授予限制性股票激励对象主动放弃部分本次归属股份\n\n0.15万股，实际归属限制性股票 1,849.52万股。上述归属限制性股票已于 2025年5月21日上市流通。\n\n根据《公司 2024年限制性股票激励计划》相关规定，因公司实施权益分派，公司需调整限制性股票授予价格。截止本报告期末，公司 2024年限制性股票激励计划首次授予限制性股票调整后的授予价格为 13.65元/股；预留限制性股票调整后的授予价格为 23.73元/股。\n\n单位：元\n\n \n\n期末发行在外的股票期权或其他权益工具  \n□适用 不适用",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.6803840196018361,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.31961598039816386
+          }
+        }
+      ],
+      "evidence_count": 5,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "E3_top_shareholder",
+      "report_id": 1,
+      "query": "第一大股东是谁",
+      "reference": {
+        "category": "relational",
+        "min_evidence": 1,
+        "notes": "期望：其实（或前十大股东表）"
+      },
+      "answer": "年报未披露",
+      "citations": [],
+      "normalized": {
+        "intent": "relational",
+        "canonical_question": "第一大股东是谁",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "股东信息"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "第一大股东"
+          ],
+          "period_labels": [
+            "2025Q1",
+            "2025Q2",
+            "2025Q3",
+            "2025Q4"
+          ],
+          "period_kinds": [
+            "quarter"
+          ],
+          "stmt_types": [
+            "kpi"
+          ],
+          "period_granularity": "quarterly"
+        },
+        "vector_query": "东方财富信息股份有限公司第一大股东",
+        "needs_previous_context": false
+      },
+      "evidence": [],
+      "evidence_count": 0,
+      "auto_check": {
+        "passed": false,
+        "issues": [
+          "evidence count 0 < min_evidence 1"
+        ]
+      }
+    },
+    {
+      "id": "F1_main_business",
+      "report_id": 1,
+      "query": "公司主要业务有哪些",
+      "reference": {
+        "category": "narrative",
+        "min_evidence": 1,
+        "notes": "期望：证券、基金销售、金融电子商务等，MD&A叙述"
+      },
+      "answer": "公司主要业务包括证券业务、金融电子商务服务业务、金融数据服务业务等。\n\n· 证券业务：主要依托互联网财富管理生态圈，通过东方财富证券、东方财富期货等公司，为海量用户提供证券、期货经纪等服务。\n· 金融电子商务服务业务：主要通过天天基金，为用户提供基金销售服务，提供一站式互联网基金理财服务。\n· 金融数据服务业务：主要以智能金融数据终端为载体，通过PC端、移动端，向海量用户提供专业化金融数据服务。",
+      "citations": [
+        "[mda]",
+        "[financial_statements]"
+      ],
+      "normalized": {
+        "intent": "narrative",
+        "canonical_question": "公司主要业务有哪些",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "mda",
+          "company_profile"
+        ],
+        "sql_targets": {
+          "item_names": [],
+          "period_labels": [],
+          "period_kinds": [],
+          "stmt_types": [],
+          "period_granularity": "any"
+        },
+        "vector_query": "东方财富信息股份有限公司的主要业务",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富是中国领先的互联网财富管理综合运营商，经过多年发展和积累，形成了自身核心竞争力优势，为公司未来可持续健康发展奠定了坚实基础。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.8669565259892015,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.24612476000939
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "报告期内，公司主要业务有证券业务、金融电子商务服务业务、金融数据服务业务等。具体服务内容：\n\n证券业务：主要依托构建的互联网财富管理生态圈，通过拥有相关业务牌照的东方财富证券、东方财富期货等公司，为海量用户提供证券、期货经纪等服务。\n\n金融电子商务服务业务：主要通过天天基金，为用户提供基金销售服务。天天基金依托以“东方财富网”为核心的互联网财富管理生态圈所形成的用户资源优势和品牌形象优势，向用户提供一站式互联网基金理财服务。\n\n金融数据服务业务：主要以智能金融数据终端为载体，通过 PC 端、移动端，向海量用户提供专业化金融数据服务。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.8612701338151244,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.25106944885641347
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富信息股份有限公司（以下简称“公司”或“本公司”）的前身系上海东财信息技术有限公司，本公司于2007年12月 20日改制为股份有限公司，2008年1月7日由上海东财信息技术股份有限公司更名为东方财富信息股份有限公司。本公司的控股股东、实际控制人为其实先生。本公司注册地址为上海市嘉定区宝安公路2999号1幢，经营地址为上海市徐汇区宛平南路88号东方财富大厦。\n\n根据本公司2009年第二次临时股东大会决议，并经中国证监会《关于核准东方财富信息股份有限公司首次公开发行股票并在创业板上市的批复》（证监许可[2010]249号）核准，公司向社会公开发行人民币普通股35,000,000股。经深圳证券交易所《关于东方财富信息股份有限公司人民币普通股股票在创业板上市的通知》（深证上[2010]89号）同意，本公司发行的人民币普通股股票在深圳证券交易所创业板上市，股票简称“东方财富”，股票代码“300059”。\n\n公司致力于构建人与财富的金融生态圈，提供财经、证券、基金、期货、社交服务等一站式互联网财富管理服务，为用户创造更多价值。本公司主营业务有证券业务、金融电子商务服务业务、金融数据服务业务等。\n\n本财务报表业经本公司董事会于 2026年 3月 18日决议批准报出。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.761234624165067,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.23876537583493296
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "公司持续构建和不断完善以“东方财富网”为核心的互联网财富管理生态圈，为海量用户提供集财经资讯、证券、基金、期货、社交服务等一站式互联网财富管理服务。公司凭借互联网财富管理生态体系，能够一站式满足投资者不同需求，形成了公司独特的业务场景优势，为公司持续发展构筑了深厚的护城河。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7516003128051012,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3464345106042598
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "经过多年的发展，公司构建了以“东方财富网”为核心的互联网财富管理生态圈，聚集了海量用户资源和用户黏性优势，在垂直财经领域始终保持领先地位。同时，公司积极推进和完善一站式互联网财富管理生态圈建设，不断加强战略投入，延伸和完善服务链条，持续拓展服务范围，提升整体服务能力和质量，巩固和提升用户访问量和用户黏性方面的优势。拥有海量用户资源是本公司核心的竞争优势，为公司持续健康发展奠定了坚实基础。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7472422455712131,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3502241342859016
+          }
+        }
+      ],
+      "evidence_count": 5,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "F2_performance_summary",
+      "report_id": 1,
+      "query": "2025年公司业绩怎么样",
+      "reference": {
+        "category": "narrative",
+        "min_evidence": 1,
+        "notes": "期望：提及营收+38.46%、净利润+25.75%等"
+      },
+      "answer": "2025年公司业绩表现良好，核心财务指标如下：\n\n· 营业总收入：160.68亿元，同比增长38.46%\n· 归属于上市公司股东的净利润：120.85亿元，同比增长25.75%\n· 归属于上市公司股东的扣除非经常性损益的净利润：116.54亿元\n\n报告期内，公司坚定聚焦主业，充分把握资本市场高质量发展及新一轮科技革命的双重机遇，迈入高质量发展新阶段。",
+      "citations": [
+        "[key_financials p.7]",
+        "[financial_statements p.74]",
+        "[mda]",
+        "[financial_statements]"
+      ],
+      "normalized": {
+        "intent": "hybrid",
+        "canonical_question": "2025年公司业绩怎么样",
+        "report_year": 2025,
+        "entities": [
+          "东方财富信息股份有限公司"
+        ],
+        "section_keys": [
+          "mda",
+          "key_financials"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入",
+            "归属于上市公司股东的净利润",
+            "净利润"
+          ],
+          "period_labels": [
+            "2025"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2025年东方财富信息股份有限公司业绩情况",
+        "needs_previous_context": false
+      },
+      "evidence": [
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 归属于上市公司股东的净利润（元) = 12084594947.2200 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "归属于上市公司股东的净利润（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 归属于上市公司股东的扣除非经常性损益的净利润（元) = 11653886754.8900 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "归属于上市公司股东的扣除非经常性损益的净利润（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[kpi/year] 2025 营业总收入（元) = 16067741039.5100 元",
+          "section_key": "key_financials",
+          "page_num": 7,
+          "score": 1.6,
+          "metadata": {
+            "item_name": "营业总收入（元)",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "kpi",
+            "table_type_guess": "key_financials_summary",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 1.归属于母公司股东的净利润 = 12084594947.2200 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "1.归属于母公司股东的净利润",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 1.持续经营净利润（净亏损以“-”号填列） = 12084594947.2200 元",
+          "section_key": "financial_statements",
+          "page_num": 74,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "1.持续经营净利润（净亏损以“-”号填列）",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富是中国领先的互联网财富管理综合运营商，经过多年发展和积累，形成了自身核心竞争力优势，为公司未来可持续健康发展奠定了坚实基础。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7931804601442553,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3102778607441258
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "我们审计了东方财富信息股份有限公司的财务报表，包括2025年12月31日的合并及公司资产负债表，2025年度的合并及公司利润表、股东权益变动表和现金流量表以及相关财务报表附注。\n\n我们认为，后附的东方财富信息股份有限公司的财务报表在所有重大方面按照企业会计准则的规定编制，公允反映了东方财富信息股份有限公司2025年12月31日的合并及公司财务状况以及2025年度的合并及公司经营成果和现金流量。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.721910834312439,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.27808916568756104
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "报告期内，我国经济在转型中持续向好，高质量发展扎实推进。在一系列深化投融资综合改革政策的引领下，市场信心显著提振，公司坚定聚焦主业，始终坚持以用户需求为中心，保持战略定力，充分把握资本市场高质量发展及新一轮科技革命的双重机遇，着力提升研发动力、产品实力、服务能力，迈入高质量发展新阶段。报告期内，公司实现营业总收入 160.68 亿元，同比增长 38.46%；实现归属于上市公司股东净利润120.85亿元，同比增长25.75%。\n\n报告期内，东方财富证券积极把握市场机遇，坚持以用户为中心，夯实零售经纪业务基础，经纪业务股基交易额38.46万亿元2。报告期内，东方财富证券获批上市证券做市业务资质，着力推进上市基金做市业务，积极布局北交所、科创板股票做市业务，稳定发展银行间和交易所债券做市业务，持续拓宽服务覆盖面，不断提升做市服务质效。同时，东方财富证券加强机构客群、企业客群的服务，稳步推进财富管理和资产管理业务，积极构建上市公司服务新生态，各项业务持续合规稳健发展，营业收入和净利润同比实现稳步增长，资本实力进一步增强。\n\n报告期内，天天基金持续深化科技驱动服务革新理念，着力构建覆盖用户全生命周期的数智化服务体系。通过 AI 应用深度拓展与平台功能交互逻辑持续优化，打造全链路服务矩阵，为用户构建智能对话、智能选基、智能投资三位一体的价值共生体系，推动财富管理服务向更智能、更贴心、更有温度持续迭代升级。截至报告期末，天天基金共上线 164 家公募基金管理人 21,930 只基金产品3，非货币市场公募基金保有规模7,701.33亿元，权益类基金保有规模4,456.17亿元。报告期内，公司互联网金融电子商务平台共计实现基金认（申）购（含定投）交易257,671,982笔，基金销售额为26,055.84亿元，其中非货币型基金共计实现认（申）购（含定投）交易166,662,521笔，销售额为15,814.26亿元。\n\n报告期内，妙想 AI 能力全面融入赋能公司各产品各业务条线，以 AI+功能重塑用户一站式财富管理体验，进一步巩固和提升公司市场地位。妙想大模型上线东方财富旗下各产品端，将专",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7211983025074005,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3728710412979126
+          }
+        }
+      ],
+      "evidence_count": 8,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "H1_missing_year",
+      "report_id": 1,
+      "query": "2022年营业总收入是多少",
+      "reference": {
+        "category": "negative",
+        "min_evidence": 0,
+        "notes": "期望：拒答/未披露（库中无2022 KPI）"
+      },
+      "answer": "年报未披露",
+      "citations": [],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2022年营业总收入是多少",
+        "report_year": 2022,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2022"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2022年营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [],
+      "evidence_count": 0,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "H2_future_year",
+      "report_id": 1,
+      "query": "2026年营业总收入是多少",
+      "reference": {
+        "category": "negative",
+        "min_evidence": 0,
+        "notes": "期望：拒答/未披露（超出报告期）"
+      },
+      "answer": "年报未披露",
+      "citations": [],
+      "normalized": {
+        "intent": "numeric",
+        "canonical_question": "2026年营业总收入是多少",
+        "report_year": 2026,
+        "entities": [
+          "营业总收入"
+        ],
+        "section_keys": [
+          "key_financials",
+          "financial_statements"
+        ],
+        "sql_targets": {
+          "item_names": [
+            "营业总收入",
+            "营业收入",
+            "一、营业总收入"
+          ],
+          "period_labels": [
+            "2026"
+          ],
+          "period_kinds": [
+            "year"
+          ],
+          "stmt_types": [
+            "kpi",
+            "income",
+            "cashflow",
+            "balance"
+          ],
+          "period_granularity": "annual"
+        },
+        "vector_query": "2026年营业总收入",
+        "needs_previous_context": false
+      },
+      "evidence": [],
+      "evidence_count": 0,
+      "auto_check": {
+        "passed": true,
+        "issues": []
+      }
+    }
+  ]
+}

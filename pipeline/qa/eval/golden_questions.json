@@ -1,0 +1,209 @@
+[
+  {
+    "id": "A1_annual_revenue",
+    "report_id": 1,
+    "category": "granularity_annual",
+    "query": "2025年营业总收入是多少",
+    "notes": "期望：16,067,741,039.51元（约160.68亿元），年度KPI口径",
+    "expected_granularity": "annual",
+    "expected_period_labels": ["2025"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A2_q1_revenue",
+    "report_id": 1,
+    "category": "granularity_quarterly",
+    "query": "2025年第一季度的营业总收入是多少",
+    "notes": "期望：3,485,587,013.94元，2025Q1季度口径",
+    "expected_granularity": "quarterly",
+    "expected_period_labels": ["2025Q1"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A3_q2_revenue",
+    "report_id": 1,
+    "category": "granularity_quarterly",
+    "query": "2025年第二季度营业总收入是多少",
+    "notes": "期望：3,370,780,510.96元，2025Q2",
+    "expected_granularity": "quarterly",
+    "expected_period_labels": ["2025Q2"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A4_q3_revenue",
+    "report_id": 1,
+    "category": "granularity_quarterly",
+    "query": "2025年第三季度营业总收入是多少",
+    "notes": "期望：4,732,581,590.06元，2025Q3",
+    "expected_granularity": "quarterly",
+    "expected_period_labels": ["2025Q3"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A5_q4_revenue",
+    "report_id": 1,
+    "category": "granularity_quarterly",
+    "query": "2025年第四季度营业总收入是多少",
+    "notes": "期望：4,478,791,924.55元，2025Q4",
+    "expected_granularity": "quarterly",
+    "expected_period_labels": ["2025Q4"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A6_prior_year_revenue",
+    "report_id": 1,
+    "category": "granularity_annual",
+    "query": "2024年营业总收入是多少",
+    "notes": "期望：11,604,343,090.16元，2024年度",
+    "expected_granularity": "annual",
+    "expected_period_labels": ["2024"],
+    "min_evidence": 1
+  },
+  {
+    "id": "A7_yoy_growth",
+    "report_id": 1,
+    "category": "granularity_annual",
+    "query": "2025年营业总收入同比增长多少",
+    "notes": "期望：38.46%",
+    "expected_granularity": "annual",
+    "min_evidence": 1
+  },
+  {
+    "id": "B1_annual_net_profit",
+    "report_id": 1,
+    "category": "metric_kpi",
+    "query": "2025年归属于上市公司股东的净利润是多少",
+    "notes": "期望：12,084,594,947.22元，年度KPI",
+    "expected_granularity": "annual",
+    "expected_period_labels": ["2025"],
+    "min_evidence": 1
+  },
+  {
+    "id": "B2_q1_net_profit",
+    "report_id": 1,
+    "category": "metric_kpi",
+    "query": "2025年第一季度净利润是多少",
+    "notes": "期望：2,715,030,716.13元，2025Q1",
+    "expected_granularity": "quarterly",
+    "expected_period_labels": ["2025Q1"],
+    "min_evidence": 1
+  },
+  {
+    "id": "B3_operating_cashflow",
+    "report_id": 1,
+    "category": "metric_kpi",
+    "query": "2025年经营活动产生的现金流量净额是多少",
+    "notes": "期望：-10,222,245,645.14元（负数）",
+    "expected_granularity": "annual",
+    "min_evidence": 1
+  },
+  {
+    "id": "B4_eps",
+    "report_id": 1,
+    "category": "metric_income",
+    "query": "2025年基本每股收益是多少",
+    "notes": "期望：0.7650元/股",
+    "expected_granularity": "annual",
+    "min_evidence": 1
+  },
+  {
+    "id": "B5_rd_ratio",
+    "report_id": 1,
+    "category": "metric_ratio",
+    "query": "2025年研发投入占营业总收入比例是多少",
+    "notes": "期望：6.64%（比例，不是金额）",
+    "min_evidence": 1
+  },
+  {
+    "id": "C1_cash_end",
+    "report_id": 1,
+    "category": "point_in_time",
+    "query": "2025年末货币资金是多少",
+    "notes": "期望：124,282,846,610.66元，期末时点",
+    "expected_granularity": "point_in_time",
+    "min_evidence": 1
+  },
+  {
+    "id": "C2_total_assets_end",
+    "report_id": 1,
+    "category": "point_in_time",
+    "query": "2025年末资产总计是多少",
+    "notes": "期望：392,933,744,976.20元",
+    "expected_granularity": "point_in_time",
+    "min_evidence": 1
+  },
+  {
+    "id": "C3_goodwill_end",
+    "report_id": 1,
+    "category": "point_in_time",
+    "query": "2025年末商誉是多少",
+    "notes": "期望：2,946,250,105.99元",
+    "expected_granularity": "point_in_time",
+    "min_evidence": 1
+  },
+  {
+    "id": "D1_revenue_alias",
+    "report_id": 1,
+    "category": "alias",
+    "query": "2025年营收是多少",
+    "notes": "期望：同A1，16,067,741,039.51元；测试「营收→营业总收入」别名",
+    "expected_granularity": "annual",
+    "min_evidence": 1
+  },
+  {
+    "id": "E1_chairman",
+    "report_id": 1,
+    "category": "relational",
+    "query": "公司董事长是谁",
+    "notes": "期望：其实",
+    "min_evidence": 1
+  },
+  {
+    "id": "E2_stock_code",
+    "report_id": 1,
+    "category": "relational",
+    "query": "公司股票代码是多少",
+    "notes": "期望：300059",
+    "min_evidence": 1
+  },
+  {
+    "id": "E3_top_shareholder",
+    "report_id": 1,
+    "category": "relational",
+    "query": "第一大股东是谁",
+    "notes": "期望：其实（或前十大股东表）",
+    "min_evidence": 1
+  },
+  {
+    "id": "F1_main_business",
+    "report_id": 1,
+    "category": "narrative",
+    "query": "公司主要业务有哪些",
+    "notes": "期望：证券、基金销售、金融电子商务等，MD&A叙述",
+    "min_evidence": 1
+  },
+  {
+    "id": "F2_performance_summary",
+    "report_id": 1,
+    "category": "narrative",
+    "query": "2025年公司业绩怎么样",
+    "notes": "期望：提及营收+38.46%、净利润+25.75%等",
+    "min_evidence": 1
+  },
+  {
+    "id": "H1_missing_year",
+    "report_id": 1,
+    "category": "negative",
+    "query": "2022年营业总收入是多少",
+    "notes": "期望：拒答/未披露（库中无2022 KPI）",
+    "min_evidence": 0
+  },
+  {
+    "id": "H2_future_year",
+    "report_id": 1,
+    "category": "negative",
+    "query": "2026年营业总收入是多少",
+    "notes": "期望：拒答/未披露（超出报告期）",
+    "min_evidence": 0
+  }
+]

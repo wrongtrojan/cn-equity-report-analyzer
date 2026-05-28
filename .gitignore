@@ -1,0 +1,20 @@
+# secrets
+.env
+pipeline/qa/.env
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# parse artifacts & inputs
+pipeline/parse/input/
+pipeline/parse/parse_result/
+pipeline/parse/_mineru_work/
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
