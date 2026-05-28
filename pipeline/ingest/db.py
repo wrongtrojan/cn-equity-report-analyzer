@@ -81,7 +81,21 @@ def get_ingest_fingerprint(cur, report_id: int) -> str | None:
 
 
 def clear_report_children(cur, report_id: int) -> None:
-    for table in ("text_chunks", "financial_facts", "structured_tables", "report_sections"):
+    cur.execute(
+        """
+        DELETE FROM kg_relation_evidence
+        WHERE relation_id IN (SELECT id FROM kg_relations WHERE report_id = %s)
+        """,
+        (report_id,),
+    )
+    for table in (
+        "kg_relations",
+        "kg_entities",
+        "text_chunks",
+        "financial_facts",
+        "structured_tables",
+        "report_sections",
+    ):
         cur.execute(f"DELETE FROM {table} WHERE report_id = %s", (report_id,))
 
 

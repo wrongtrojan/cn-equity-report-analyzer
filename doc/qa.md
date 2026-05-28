@@ -1,16 +1,18 @@
 # 混合检索问答
 
+> 文档索引：[README.md](README.md)
+
 ## 概述
 
-问答模块在已入库的年报数据上回答自然语言问题。采用 **查询标准化 → 意图路由 → 多路检索 → 证据合并 → LLM 生成** 的流水线：数值类问题走 SQL 结构化事实，叙述类走 pgvector 语义检索，关系类预留知识图谱接口并与表格检索组合。
+问答模块在已入库的年报数据上回答自然语言问题。采用 **查询标准化 → 意图路由 → 多路检索 → 证据合并 → LLM 生成** 的流水线：数值类走 SQL 结构化事实，叙述类走 pgvector，关系类走 KG + 表格检索。
 
-**依赖**：PostgreSQL（含 `financial_facts`、`text_chunks`）、OpenAI 兼容 API（查询标准化与作答）。
+**依赖**：PostgreSQL（含 `financial_facts`、`text_chunks`）、OpenAI 兼容 API。环境配置见 [setup.md](setup.md)。
 
 ## 模块结构
 
 | 文件 | 职责 |
 |------|------|
-| `config.py` | LLM、检索 Top-K、超时；加载 `qa/.env` |
+| `config.py` | LLM、检索 Top-K、超时；读取项目根 `.env` |
 | `schemas.py` | `NormalizedQuery`、`EvidenceItem`、`QAResponse` 等 Pydantic 模型 |
 | `normalize.py` | 粒度推断、期间标签、科目别名展开、意图规则修正 |
 | `llm.py` | Jinja 模板 + OpenAI 客户端：标准化 JSON、生成回答 |
@@ -58,7 +60,7 @@ sequenceDiagram
 |------|------|------|
 | `numeric` | 仅 SQL | 金额、比例、同比、报表科目 |
 | `narrative` | 仅向量 | 主要业务、经营讨论等叙述 |
-| `relational` | SQL 表格 + KG（占位） | 股东、高管、关联方等 |
+| `relational` | SQL 表格 + KG（`kg_relations`） | 股东、高管、子公司、关联方等 |
 | `hybrid` | SQL + 向量 | 如「业绩怎么样」类概览问题 |
 
 `normalize.apply_intent_rules` 用规则覆盖常见 LLM 误判（例如「主要业务」强制 `narrative`；「业绩怎么样」强制 `hybrid` 并附带 KPI SQL 目标）。
@@ -92,6 +94,12 @@ LLM 失败时，`pipeline._fallback_normalize` 按关键词回退到规则标准
 - pgvector 余弦距离 `<=>`；`section_keys` 命中时分数 ×1.15。
 - 每个 `section_id` 独立切块，避免 MD&A 子节互相覆盖。
 
+### KG 检索（`KGRetriever`）
+
+- 从 `kg_relations` / `kg_entities` / `kg_relation_evidence` 读取关系边。
+- 按问句关键词映射 `relation_type`（如「股东」→ `shareholder_of`，「子公司」→ `subsidiary_of`）。
+- 前置条件：`python -m pipeline.ingest.ingest --with-relations` 已写入 KG 数据。关系抽取规则见 [relation_extract.md](relation_extract.md)。
+
 ### 证据合并（`merge_evidence`）
 
 按来源优先级去重排序：`financial_fact` > `structured_table` > `kg_relation` > `text_chunk`，截断至 `MAX_EVIDENCE`（默认 8）。
@@ -102,23 +110,22 @@ LLM 失败时，`pipeline._fallback_normalize` 按关键词回退到规则标准
 
 ## 配置
 
-复制环境变量模板：
-
-```bash
-cp pipeline/qa/.env.example pipeline/qa/.env
-```
+环境变量模板与完整列表见 [setup.md §环境变量](setup.md#环境变量)。QA 相关项：
 
 | 变量 | 必填 | 说明 |
 |------|------|------|
 | `OPENAI_API_KEY` | 是 | API 密钥 |
 | `OPENAI_BASE_URL` | 否 | 兼容端点，默认 OpenAI |
-| `QA_LLM_MODEL` | 否 | 默认 `gpt-4o-mini` |
-| `DATABASE_URL` | 否 | 默认与 ingest 相同 |
-| `EMBED_MODEL` | 否 | 与入库一致 |
+| `LLM_MODEL` | 否 | 全项目默认 LLM，默认 `gpt-4o-mini` |
+| `QA_LLM_MODEL` | 否 | QA 专用模型；未设时使用 `LLM_MODEL` |
+| `DATABASE_URL` | 否 | 默认 `postgresql://trojan@localhost:5433/re` |
+| `EMBED_MODEL` | 否 | 须与入库一致（默认 `BAAI/bge-m3`） |
 | `QA_SQL_TOP_K` | 否 | 默认 5 |
 | `QA_VECTOR_TOP_K` | 否 | 默认 5 |
 | `QA_MAX_EVIDENCE` | 否 | 默认 8 |
 | `QA_MAX_SESSION_TURNS` | 否 | 会话保留轮数，默认 5 |
+| `QA_NORMALIZE_TIMEOUT` | 否 | 查询标准化超时（秒），默认 60 |
+| `QA_ANSWER_TIMEOUT` | 否 | 作答生成超时（秒），默认 90 |
 
 ## 命令行
 
@@ -148,15 +155,12 @@ python -m pipeline.qa.cli --report-id 1 --query "公司主要业务有哪些" --
 
 ### Smoke 评测
 
+详见 [eval.md §QA Smoke](eval.md#qa-smoke-评测)。
+
 ```bash
 python -m pipeline.qa.smoke_eval
 python -m pipeline.qa.smoke_eval --category metric
-python -m pipeline.qa.smoke_eval --output pipeline/qa/eval/smoke_results.json
 ```
-
-- 用例定义：`eval/golden_questions.json`
-- 结果写入 `eval/smoke_results.json`，含 `auto_check`（关键词、粒度、`min_evidence` 等）
-- 自动检查仅供参考，需结合 `answer` / `evidence` 人工核对
 
 ## 能力边界（当前实现）
 
@@ -165,14 +169,14 @@ python -m pipeline.qa.smoke_eval --output pipeline/qa/eval/smoke_results.json
 | 年度 / 分季度 KPI、三大报表科目、研发比例与人员 | 已支持（SQL） |
 | 营收等口语别名 | 已支持（`item_aliases`） |
 | MD&A、公司简介等叙述 | 已支持（向量） |
-| 董事长、第一大股东等关系事实 | 部分依赖 LLM 路由与表格命中；KG 检索为空实现 |
+| 董事长、第一大股东、子公司、关联方等关系事实 | 已支持（`KGRetriever` 读 `kg_relations`；需 ingest `--with-relations`） |
 | 跨报告、跨公司联合问答 | 未支持（单 `report_id` 会话） |
 
 ## 故障排查
 
 | 现象 | 处理建议 |
 |------|----------|
-| `Missing required env: OPENAI_API_KEY` | 配置 `pipeline/qa/.env` |
+| `Missing required env: OPENAI_API_KEY` | 配置项目根 `.env`（`cp .env.example .env`） |
 | 数值题答错或「未披露」 | 查 `financial_facts` 是否有对应 `item_name` / `period_label`；看 `normalized.sql_targets` |
 | 叙述题答非所问 | 确认已跑 embedding；检查 `text_chunks` 数量与 `section_key` |
 | 季度题命中年度数 | 看 `period_granularity` 是否为 `quarterly` |
@@ -180,6 +184,12 @@ python -m pipeline.qa.smoke_eval --output pipeline/qa/eval/smoke_results.json
 
 ## 相关文档
 
-- 数据表与验收 SQL：[database_schema.md](database_schema.md)
-- 解析产物格式：[parse.md](parse.md)
-- 入库与指标抽取：[ingest.md](ingest.md)
+| 文档 | 说明 |
+|------|------|
+| [setup.md](setup.md) | 环境与 `.env` |
+| [database_schema.md](database_schema.md) | 数据表与验收 SQL |
+| [ingest.md](ingest.md) | 入库与 embedding |
+| [relation_extract.md](relation_extract.md) | KG 数据来源 |
+| [report.md](report.md) | 关系图谱可视化 |
+| [eval.md](eval.md) | smoke 回归 |
+| [parse.md](parse.md) | 解析产物格式 |

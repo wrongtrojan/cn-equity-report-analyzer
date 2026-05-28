@@ -1,5 +1,7 @@
 # PDF 解析（MinerU）
 
+> 文档索引：[README.md](README.md)
+
 ## 概述
 
 解析模块将上市公司年报 PDF 转为结构化文本与版面中间表示，供后续入库使用。实现基于 [MinerU](https://github.com/opendatalab/MinerU) SDK，输出保留 HTML 表格、标题层级与页码映射信息。
@@ -89,18 +91,14 @@ python pipeline/parse/mineru_parse.py --out /path/to/parse_result
 | 参数 | 默认 | 说明 |
 |------|------|------|
 | `--lang` | `ch` | 文档语言（`ch` / `ch_server` / `en`） |
-| `--backend` | `pipeline` | MinerU 后端；有 GPU 时 `pipeline` 可使用 CUDA |
+| `--backend` | `pipeline` | MinerU 后端：`pipeline`（GPU 可用 CUDA）或 `hybrid-auto-engine` |
 | `--parse-method` | `auto` | `auto` / `txt` / `ocr` |
 | `--keep-raw` | 关 | 保留 `_mineru_work/` 原始输出（调试） |
 | `--force` | 关 | 忽略缓存 |
 
 ## 依赖与环境
 
-- Python 3.10+
-- MinerU：`pip install -U "mineru[all]"`
-- 可选 GPU：`torch` + CUDA（脚本启动时会打印设备信息）
-
-解析**不连接数据库**；完成后需运行 [ingest.md](ingest.md) 中的入库命令。
+详见 [setup.md](setup.md)。解析不连接数据库；完成后运行 [ingest.md](ingest.md)。
 
 ## 与下游的衔接
 
@@ -110,7 +108,7 @@ python pipeline/parse/mineru_parse.py --out /path/to/parse_result
 - `outputs.markdown` → 章节切分、表格抽取
 - `outputs.middle_json` → 表格页码
 
-若仅更新解析产物而未改 embedding 相关参数，入库可能因 `ingest_fingerprint` 未变而跳过；需使用 `ingest_report --force` 强制重建数据库侧数据。
+若仅更新解析产物而未改 embedding 相关参数，入库可能因 `ingest_fingerprint` 未变而跳过；需使用 `pipeline.ingest.ingest --force` 强制重建数据库侧数据。
 
 ## 故障排查
 
@@ -120,3 +118,11 @@ python pipeline/parse/mineru_parse.py --out /path/to/parse_result
 | 输出目录找不到 `*_middle.json` | 加 `--keep-raw` 查看 `_mineru_work`，核对 MinerU 版本与日志 |
 | 重复解析耗时过长 | 确认未误用 `--force`；检查 `meta.json` 指纹是否与当前 PDF 一致 |
 | 表格在 MD 中缺失 | 确认 `table_enable=True`（脚本内已默认开启） |
+
+## 相关文档
+
+| 文档 | 说明 |
+|------|------|
+| [setup.md](setup.md) | 环境与 MinerU 安装 |
+| [ingest.md](ingest.md) | 入库流程 |
+| [database_schema.md](database_schema.md) | `parsed_artifacts` 等表结构 |

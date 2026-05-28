@@ -360,8 +360,112 @@ class VectorRetriever:
 
 
 class KGRetriever:
-    """Phase2 placeholder retriever."""
+    def __init__(self, top_k: int = SQL_TOP_K) -> None:
+        self.top_k = top_k
 
     def retrieve(self, report_id: int, normalized: NormalizedQuery) -> list[EvidenceItem]:
-        _ = (report_id, normalized)
-        return []
+        entities = [e.strip() for e in (normalized.entities or []) if e and e.strip()]
+        query_text = normalized.canonical_question or ""
+        if not entities:
+            for token in re.findall(r"[\u4e00-\u9fffA-Za-z·]{2,20}", query_text):
+                if len(token) >= 2:
+                    entities.append(token)
+
+        relation_types: list[str] | None = None
+        if re.search(r"股东|持股|控股|实际控制", query_text):
+            relation_types = ["shareholder_of", "actual_controller_of"]
+        elif re.search(r"董事|监事|高管|管理层|董事长|总经理", query_text):
+            relation_types = ["executive_of", "director_of"]
+        elif re.search(r"子公司|参股|控股公司", query_text):
+            relation_types = ["subsidiary_of", "invest_in"]
+        elif re.search(r"关联方|关联交易", query_text):
+            relation_types = ["related_party_of", "transaction_with"]
+
+        params: list = [report_id]
+        filters = ["r.report_id = %s"]
+        if relation_types:
+            filters.append("r.relation_type = ANY(%s)")
+            params.append(relation_types)
+        if entities:
+            entity_clause = " OR ".join(
+                ["se.name ILIKE %s", "oe.name ILIKE %s"] * len(entities)
+            )
+            filters.append(f"({entity_clause})")
+            for entity in entities:
+                pattern = f"%{entity}%"
+                params.extend([pattern, pattern])
+
+        sql = f"""
+            SELECT r.id, r.relation_type, r.attrs, r.confidence, r.source,
+                   se.name, oe.name, se.entity_type, oe.entity_type
+            FROM kg_relations r
+            JOIN kg_entities se ON se.id = r.subject_entity_id
+            JOIN kg_entities oe ON oe.id = r.object_entity_id
+            WHERE {" AND ".join(filters)}
+            ORDER BY r.confidence DESC, r.id ASC
+            LIMIT %s
+        """
+        params.append(self.top_k * 3)
+
+        with connect() as conn, conn.cursor() as cur:
+            cur.execute(sql, params)
+            rows = cur.fetchall()
+            if not rows:
+                return []
+
+            relation_ids = [row[0] for row in rows]
+            cur.execute(
+                """
+                SELECT relation_id, evidence_type, section_key, page_num, snippet, attrs
+                FROM kg_relation_evidence
+                WHERE relation_id = ANY(%s)
+                ORDER BY id
+                """,
+                (relation_ids,),
+            )
+            evidence_rows = cur.fetchall()
+
+        evidence_map: dict[int, list[tuple]] = {}
+        for row in evidence_rows:
+            evidence_map.setdefault(row[0], []).append(row[1:])
+
+        evidence_items: list[EvidenceItem] = []
+        for relation_id, relation_type, attrs, confidence, source, subject, object_name, subject_type, object_type in rows:
+            ev_rows = evidence_map.get(relation_id, [])
+            snippet = ev_rows[0][3] if ev_rows else ""
+            section_key = ev_rows[0][1] if ev_rows else None
+            page_num = ev_rows[0][2] if ev_rows else None
+            attrs = attrs or {}
+            attr_text = ", ".join(f"{k}={v}" for k, v in attrs.items() if v)
+            content = f"{subject} --[{relation_type}]--> {object_name}"
+            if attr_text:
+                content = f"{content} ({attr_text})"
+            if snippet:
+                content = f"{content} | {snippet}"
+
+            score = float(confidence or 0.8)
+            if entities and any(entity in subject or entity in object_name for entity in entities):
+                score += 0.15
+
+            evidence_items.append(
+                EvidenceItem(
+                    source_type="kg_relation",
+                    content=content,
+                    section_key=section_key,
+                    page_num=page_num,
+                    score=min(score, 1.0),
+                    metadata={
+                        "relation_id": relation_id,
+                        "relation_type": relation_type,
+                        "subject": subject,
+                        "object": object_name,
+                        "subject_type": subject_type,
+                        "object_type": object_type,
+                        "source": source,
+                        "attrs": attrs,
+                    },
+                )
+            )
+
+        evidence_items.sort(key=lambda x: -x.score)
+        return evidence_items[: self.top_k]

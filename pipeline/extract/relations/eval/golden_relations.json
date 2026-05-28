@@ -1,0 +1,70 @@
+[
+  {
+    "type": "must_exist",
+    "report_id": 1,
+    "subject": "其实",
+    "relation_type": "shareholder_of",
+    "object_contains": "东方财富"
+  },
+  {
+    "type": "must_exist",
+    "report_id": 1,
+    "subject": "其实",
+    "relation_type": "actual_controller_of",
+    "object_contains": "东方财富"
+  },
+  {
+    "type": "must_exist",
+    "report_id": 1,
+    "subject": "东方财富证券",
+    "relation_type": "subsidiary_of",
+    "object_contains": "东方财富"
+  },
+  {
+    "type": "must_exist",
+    "report_id": 1,
+    "subject": "深圳红树科技有限公司",
+    "relation_type": "transaction_with",
+    "object_contains": "东方财富"
+  },
+  {
+    "type": "must_exist",
+    "report_id": 1,
+    "subject": "香港中央结算有限公司",
+    "relation_type": "shareholder_of",
+    "object_contains": "东方财富"
+  },
+  {
+    "type": "must_have_attrs",
+    "report_id": 1,
+    "subject": "其实",
+    "relation_type": "shareholder_of",
+    "attrs_contains": ["ratio"]
+  },
+  {
+    "type": "must_not_exist",
+    "report_id": 1,
+    "forbidden_subjects": [
+      "合计",
+      "小计",
+      "职工代表监事",
+      "监事会主席",
+      "合规总监",
+      "坏账准备",
+      "账面余额"
+    ]
+  },
+  {
+    "type": "must_not_exist",
+    "report_id": 1,
+    "relation_type": "shareholder_of",
+    "forbidden_evidence_title_contains": "限售"
+  },
+  {
+    "type": "count_range",
+    "report_id": 1,
+    "relation_type": "shareholder_of",
+    "min": 8,
+    "max": 12
+  }
+]

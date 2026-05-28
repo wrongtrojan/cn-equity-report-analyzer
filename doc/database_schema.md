@@ -1,9 +1,9 @@
 # 数据库表结构说明
 
+> 文档索引：[README.md](README.md)  
 > 数据库：PostgreSQL 16 + pgvector + pg_trgm  
-> Schema 定义：[db/schema_base.sql](../db/schema_base.sql)  
-> 迁移脚本：[db/migrate_text_chunks_section_id_unique.sql](../db/migrate_text_chunks_section_id_unique.sql)（`text_chunks` 唯一键）  
-> 流水线文档：[parse.md](parse.md) · [ingest.md](ingest.md) · [qa.md](qa.md)
+> Schema：[db/schema_base.sql](../db/schema_base.sql) · [db/schema_kg.sql](../db/schema_kg.sql)  
+> 初始化：[setup.md](setup.md)
 
 ---
 
@@ -21,8 +21,9 @@
 | 字典 | `table_type_catalog` | 已知表格类型目录 |
 | 财务事实 | `financial_facts` | 从关键表格抽取的标准化指标 |
 | 向量检索 | `text_chunks` | 文本切块 + pgvector embedding |
+| 知识图谱 | `kg_entities` / `kg_relations` / `kg_relation_evidence` | 实体关系及证据（见 [schema_kg.sql](../db/schema_kg.sql)） |
 
-**共 10 张业务表**（不含扩展与触发器函数）。
+**共 13 张业务表**（不含扩展与触发器函数）。
 
 ---
 
@@ -37,6 +38,12 @@ erDiagram
     reports ||--o{ structured_tables : contains
     reports ||--o{ financial_facts : contains
     reports ||--o{ text_chunks : contains
+    reports ||--o{ kg_entities : contains
+    reports ||--o{ kg_relations : contains
+    kg_entities ||--o{ kg_relations : subject
+    kg_entities ||--o{ kg_relations : object
+    kg_relations ||--o{ kg_relation_evidence : has
+    structured_tables ||--o{ kg_relation_evidence : cites
     report_sections ||--o{ structured_tables : locates
     report_sections ||--o{ text_chunks : sources
     structured_tables ||--o{ financial_facts : extracts
@@ -152,7 +159,9 @@ erDiagram
 | `table_type_guess` | VARCHAR(64) | 推断类型（见下表） |
 | `section_key` | VARCHAR(64) | 所属章节 |
 
-**当前已识别类型（示例）**：
+**当前已识别类型**：
+
+**财报与经营类**（详见 [text_extract.md](text_extract.md) §5）
 
 | table_type_guess | 用途 |
 |------------------|------|
@@ -161,7 +170,21 @@ erDiagram
 | `balance_sheet` / `income_statement` / `cashflow_statement` | 三大报表 |
 | `rd_investment_summary` | MD&A 研发投入金额与占比 |
 | `rd_personnel_summary` | 研发人员数量与占比 |
-| `top10_shareholders` | 前十大股东（关系抽取预留） |
+| `company_profile_kv` | 公司简介 KV 表 |
+| `bond_financials` / `glossary_terms` | 债券财务 / 释义 |
+
+**关系相关类**（详见 [relation_extract.md](relation_extract.md) §4）
+
+| table_type_guess | 关系抽取 |
+|------------------|----------|
+| `top10_shareholders` | 是 |
+| `controller_info` | 是 |
+| `director_roster` | 是 |
+| `subsidiaries` | 是 |
+| `related_party_transactions` / `related_party_list` | 是 |
+| `restricted_shares` / `director_compensation` / `related_party_balance` 等 | 否（分类用于排除误抽） |
+
+> 分类器实现：[`pipeline/extract/text/table_classify.py`](../pipeline/extract/text/table_classify.py)，基于 [`table_semantics.table_text_blob`](../pipeline/extract/text/table_semantics.py) 全单元格扫描，支持嵌套表头。
 
 ---
 
@@ -230,37 +253,40 @@ erDiagram
 ```text
 PDF
  → MinerU → parse_result/{报告名}/meta.json + *.md + *_middle.json
- → pipeline.ingest（结构化 + embedding）:
+ → pipeline.ingest（结构化 + 可选 embedding + 可选关系）:
      companies / reports / parsed_artifacts
      report_sections
      structured_tables（每表一行 + table_type_guess）
      financial_facts（分类表 → 指标行）
+     kg_entities / kg_relations / kg_relation_evidence（--with-relations）
      text_chunks（切块 + embedding）
  → pipeline.qa（Hybrid QA）:
-     normalize → SQL / 向量检索 → LLM 生成
+     normalize → SQL / 向量 / KG 检索 → LLM 生成
+ → report.cli（关系图谱 HTML 预览，见 report.md）
 ```
 
 ---
 
 ## 6. 代码模块与表映射
 
-| 包 | 模块（重构后） | 职责 |
-|----|----------------|------|
-| `pipeline/ingest` | `config.py` | 路径、DB、切块/embedding 参数、章节默认别名 |
-| | `db.py` | 连接、upsert、别名加载 |
-| | `item_aliases.py` | 科目 canonical 别名（与 QA 共用） |
-| | `markdown.py` | 章节切分、表格抽取、切块、公司元数据 |
-| | `extract.py` | 表格分类 + `financial_facts` 抽取 |
-| | `ingest.py` | 结构化入库 + embedding + CLI |
-| | `ingest_report.py` | 兼容入口 `python -m pipeline.ingest.ingest_report` |
-| `pipeline/qa` | `config.py` | LLM / 检索参数 |
-| | `schemas.py` | Pydantic 模型 |
-| | `normalize.py` | 查询补全、粒度、意图规则 |
-| | `llm.py` | 标准化与作答 |
-| | `retrieval.py` | SQL / 向量 / KG 检索与证据合并 |
-| | `pipeline.py` | 会话与问答编排 |
-| | `cli.py` | REPL / 单次问答 / 终端 UI |
-| | `smoke_eval.py` | 回归评测 |
+提取层 **text / relations 并列**，详见 [extract.md](extract.md)。
+
+| 包 | 模块 | 分支 | 职责 |
+|----|------|------|------|
+| `pipeline/extract` | `runner.py` | — | 共享前置 + 并列编排 |
+| | `contracts.py` | 共用 | `ExtractResult` |
+| | `text/markdown_extract.py` | text | sections、tables、切块 |
+| | `text/table_classify.py` | 共用 | `table_type_guess` |
+| | `text/table_semantics.py` | 共用 | 表语义工具 |
+| | `text/fact_extract.py` | text | `financial_facts` |
+| | `relations/relation_extract.py` | relations | `kg_*` 数据源 |
+| | `relations/relation_validate.py` | relations | 校验 |
+| `pipeline/ingest` | `ingest.py` | — | 写库 + embedding |
+| `pipeline/qa` | `retrieval.py` | — | 消费 facts / kg / chunks |
+| `report` | `cli.py` | — | 关系图谱预览 |
+
+- text 分支 → [text_extract.md](text_extract.md)  
+- relations 分支 → [relation_extract.md](relation_extract.md)
 
 ---
 
@@ -277,7 +303,9 @@ UNION ALL SELECT 'tables_typed', COUNT(*) FROM structured_tables WHERE report_id
 UNION ALL SELECT 'facts', COUNT(*) FROM financial_facts WHERE report_id = 1
 UNION ALL SELECT 'facts_ratio', COUNT(*) FROM financial_facts WHERE report_id = 1 AND is_ratio
 UNION ALL SELECT 'chunks', COUNT(*) FROM text_chunks WHERE report_id = 1
-UNION ALL SELECT 'embedded', COUNT(*) FROM text_chunks WHERE report_id = 1 AND embedding IS NOT NULL;
+UNION ALL SELECT 'embedded', COUNT(*) FROM text_chunks WHERE report_id = 1 AND embedding IS NOT NULL
+UNION ALL SELECT 'kg_entities', COUNT(*) FROM kg_entities WHERE report_id = 1
+UNION ALL SELECT 'kg_relations', COUNT(*) FROM kg_relations WHERE report_id = 1;
 
 -- facts 按报表类型
 SELECT stmt_type, COUNT(*) FROM financial_facts WHERE report_id = 1 GROUP BY stmt_type ORDER BY 2 DESC;
@@ -291,19 +319,54 @@ SELECT section_key, COUNT(*) FROM text_chunks WHERE report_id = 1 GROUP BY secti
 SELECT section_key, chunk_index, LEFT(content, 120) FROM text_chunks WHERE report_id = 1 LIMIT 10;
 ```
 
-**东方财富 2025 样例基线**：约 579 sections、279 tables、14+ typed、471 facts、488 chunks。
+**东方财富 2025 样例基线**（`--with-relations --skip-embed --force` 后）：
+
+| 层 | 数量 |
+|----|------|
+| sections | 579 |
+| tables | 279 |
+| tables_typed | 35 |
+| financial_facts | 471 |
+| kg_entities | 29 |
+| kg_relations | 35 |
+| text_chunks（含 embed 时） | 488 |
 
 ---
 
-## 8. 规划中的知识图谱表
+## 8. 知识图谱表
 
 | 表名 | 用途 |
 |------|------|
-| `kg_entities` | 实体 |
-| `kg_relations` | 关系三元组 |
-| `kg_relation_evidence` | 关系证据 |
+| `kg_entities` | 实体（`company` / `person` / `organization` / `subsidiary`） |
+| `kg_relations` | 关系边；`source_key` 唯一键含 `table_seq` |
+| `kg_relation_evidence` | 证据（`table_row` / `section_text`）；`table_id` → `structured_tables` |
 
-上述表尚未建库；关系数据计划从 `structured_tables` 规则抽取，**不要求改动现有表结构**。
+建表脚本：[`db/schema_kg.sql`](../db/schema_kg.sql)
+
+写入：`python -m pipeline.ingest.ingest --with-relations --force`
+
+设计说明：[relation_extract.md](relation_extract.md)
+
+**`kg_relations.source_key`**：`{relation_type}|{subject_key}|{object_key}|{table_seq}`，同一 report 内唯一。
+
+常用验收 SQL：
+
+```sql
+SELECT relation_type, COUNT(*) FROM kg_relations WHERE report_id = 1 GROUP BY 1 ORDER BY 2 DESC;
+
+SELECT se.name, r.relation_type, r.attrs->>'ratio' AS ratio, r.source
+FROM kg_relations r
+JOIN kg_entities se ON se.id = r.subject_entity_id
+WHERE r.report_id = 1 AND r.relation_type = 'shareholder_of'
+ORDER BY se.name;
+
+-- 负例检查：以下 subject 不应存在
+SELECT se.name, r.relation_type
+FROM kg_relations r
+JOIN kg_entities se ON se.id = r.subject_entity_id
+WHERE r.report_id = 1
+  AND se.name IN ('合计', '坏账准备', '职工代表监事', '监事会主席', '合规总监');
+```
 
 ---
 
@@ -312,7 +375,12 @@ SELECT section_key, chunk_index, LEFT(content, 120) FROM text_chunks WHERE repor
 | 文件 | 说明 |
 |------|------|
 | [doc/README.md](README.md) | 文档索引 |
-| [doc/parse.md](parse.md) | PDF 解析 |
+| [doc/extract.md](extract.md) | 提取层（text ∥ relations） |
+| [doc/text_extract.md](text_extract.md) | 文本分支 |
+| [doc/relation_extract.md](relation_extract.md) | 关系分支 |
 | [doc/ingest.md](ingest.md) | 结构化入库 |
+| [doc/setup.md](setup.md) | 环境与建库 |
+| [doc/eval.md](eval.md) | 回归评测 |
+| [doc/report.md](report.md) | 关系图谱 |
 | [doc/qa.md](qa.md) | 混合检索问答 |
 | [db/schema_base.sql](../db/schema_base.sql) | 建表与种子数据 |

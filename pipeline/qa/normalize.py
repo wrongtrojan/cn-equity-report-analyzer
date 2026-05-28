@@ -204,6 +204,24 @@ def apply_intent_rules(
                 }
             )
 
+    if re.search(r"股东|持股|控股|实际控制人|第一大股东|子公司|关联方|董事|监事|高管|董事长", q):
+        section_keys = list(normalized.section_keys) or [
+            "top10_shareholders",
+            "shareholder_section",
+            "subsidiaries",
+            "directors_supervisors",
+            "related_parties",
+            "corporate_governance",
+        ]
+        return normalized.model_copy(
+            update={
+                "intent": "relational",
+                "section_keys": section_keys,
+                "vector_query": vector_query,
+                "report_year": year,
+            }
+        )
+
     return normalized
 
 

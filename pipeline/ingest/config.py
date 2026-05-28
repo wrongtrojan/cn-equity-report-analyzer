@@ -2,6 +2,8 @@
 from pathlib import Path
 import os
 
+import pipeline.env  # noqa: F401 — load project-root .env
+
 INGEST_DIR = Path(__file__).resolve().parent
 PIPELINE_DIR = INGEST_DIR.parent
 PARSE_RESULT_DIR = PIPELINE_DIR / "parse" / "parse_result"

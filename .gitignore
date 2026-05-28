@@ -1,6 +1,5 @@
 # secrets
 .env
-pipeline/qa/.env
 
 # python
 __pycache__/
@@ -13,6 +12,9 @@ venv/
 pipeline/parse/input/
 pipeline/parse/parse_result/
 pipeline/parse/_mineru_work/
+
+# generated reports
+report/output/
 
 # editor / OS
 .DS_Store
