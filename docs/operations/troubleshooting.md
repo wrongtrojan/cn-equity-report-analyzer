@@ -8,7 +8,7 @@
 |------|------|
 | `无法导入 MinerU SDK` | Conda 环境安装 `mineru[all]` |
 | `Missing required env: OPENAI_API_KEY` | `cp .env.example .env` 并填写 |
-| psycopg2 连接失败 | 检查 `DATABASE_URL`、PG 服务、扩展 pgvector/pg_trgm |
+| psycopg2 连接失败 / `could not connect` | 先 [启动 PostgreSQL](setup.md#postgresql-安装与启动)，再查 `DATABASE_URL`、端口、扩展 pgvector/pg_trgm |
 
 ## parse
 

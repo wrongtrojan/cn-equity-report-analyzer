@@ -29,6 +29,7 @@ flowchart LR
 ```bash
 cp .env.example .env   # DATABASE_URL、OPENAI_API_KEY，见 docs/operations/setup.md
 
+# 跑 ingest 前确认 PostgreSQL 已启动：psql "$DATABASE_URL" -c "SELECT 1"
 python pipeline/parse/mineru_parse.py
 python -m pipeline.ingest.ingest --with-relations --force
 python -m pipeline.analysis.cli.mock_benchmark --report-id 1 --seed 42

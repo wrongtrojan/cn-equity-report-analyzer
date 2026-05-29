@@ -4,8 +4,19 @@
 
 ## 前置
 
-1. 完成 [operations/setup.md](operations/setup.md) 中的环境、数据库、`.env` 配置
-2. 确认 `pipeline/parse/parse_result/` 下已有样例解析产物，或自行放置 PDF 后执行 parse
+按顺序完成（细节见 [operations/setup.md](operations/setup.md)）：
+
+1. **Python 环境** — [setup.md §Python 环境](operations/setup.md#python-环境)
+2. **PostgreSQL 安装、启动、连通性** — [setup.md §PostgreSQL 安装与启动](operations/setup.md#postgresql-安装与启动)（**必做**；RE 不会自动拉起数据库）
+3. **建库 + schema 初始化** — [setup.md §数据库初始化](operations/setup.md#数据库初始化)（项目伊始一次性）
+4. **`.env` 配置** — [setup.md §配置](operations/setup.md#配置)（`DATABASE_URL`、`OPENAI_API_KEY`）
+5. 确认 `pipeline/parse/parse_result/` 下已有样例解析产物，或自行放置 PDF 后执行 parse
+
+日常跑 pipeline 前，先确认数据库在运行：
+
+```bash
+psql "$DATABASE_URL" -c "SELECT 1"
+```
 
 ## 一条龙命令
 
@@ -28,6 +39,7 @@ python -m report.cli --report-id 1 --mode all --serve
 
 | 步骤 | 命令 | 验收 |
 |------|------|------|
+| 0 数据库 | 见 [setup §PostgreSQL](operations/setup.md#postgresql-安装与启动) | `psql "$DATABASE_URL" -c "SELECT 1"` 返回 `1` |
 | 1 解析 | `python pipeline/parse/mineru_parse.py` | `parse_result/*/meta.json` 中 `status=success` |
 | 2 入库 | `python -m pipeline.ingest.ingest --with-relations --force` | 退出码 0；见下方 SQL |
 | 3 问答 | `python -m pipeline.qa.cli --report-id 1 --query "…"` | 返回数值或叙述答案 |

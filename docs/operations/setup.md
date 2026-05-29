@@ -20,11 +20,68 @@ pip install -U "mineru[all]" psycopg2-binary sentence-transformers openai jinja2
 
 所有 `python -m pipeline.*` 与 `report.cli` 均在 **项目根目录** 执行。
 
-## 数据库初始化
+## PostgreSQL 安装与启动
+
+> RE **不会**自动安装或启动 PostgreSQL。`ingest` / `qa` / `analysis` / `report` 仅通过 `DATABASE_URL` 连接已有实例；连不上库时请先确认 **PostgreSQL 服务已在运行**。
+
+### 首次 vs 日常
+
+| 场景 | 要做的事 |
+|------|----------|
+| **项目伊始（一次性）** | 安装 PostgreSQL → 安装扩展 → 启动服务 → 建库 → 跑 schema 脚本 → 配置 `.env` |
+| **日常开发** | 确认服务已启动 → `psql "$DATABASE_URL" -c "SELECT 1"` 通过后，再跑 pipeline |
+
+WSL / Linux 重启后，PostgreSQL **通常不会自动运行**，需手动启动（除非你已配置 systemd 开机自启）。
+
+### 安装（Ubuntu / WSL 示例）
 
 ```bash
-createdb -h localhost -p 5433 -U trojan re   # 示例
+sudo apt update
+sudo apt install -y postgresql postgresql-contrib
+# pgvector：按发行版安装 postgresql-16-pgvector，或从源码/官方仓库安装
+```
 
+版本须 **16+**。扩展 **pgvector**（向量检索）、**pg_trgm**（`schema_base.sql` 会 `CREATE EXTENSION`）须在实例中可用。
+
+`.env.example` 默认端口为 **5433**（非 PostgreSQL 默认 5432），表示「按你本机实际实例修改 `DATABASE_URL`」——端口、用户名、库名须与安装一致。
+
+### 启动与停止
+
+```bash
+# 常见（apt 安装 + systemd）
+sudo service postgresql start
+sudo service postgresql status
+
+# 或
+sudo systemctl start postgresql
+sudo systemctl enable postgresql   # 可选：开机自启
+```
+
+若使用自定义端口（如 5433），请确认 `postgresql.conf` / `pg_hba.conf` 已配置，并与 `.env` 中 `DATABASE_URL` 一致。
+
+### 连通性检查
+
+在项目根目录、已 `cp .env.example .env` 且填写 `DATABASE_URL` 后：
+
+```bash
+psql "$DATABASE_URL" -c "SELECT 1"
+```
+
+返回一行 `1` 表示服务可达。失败常见原因：服务未启动、端口/用户/库名错误、WSL 未启动 PostgreSQL。
+
+### 建库（一次性）
+
+服务已启动且 `psql` 能连上实例后：
+
+```bash
+createdb -h localhost -p 5433 -U trojan re   # 主机/端口/用户按本机调整
+```
+
+## 数据库初始化
+
+在项目根目录执行（**须已建库且 `psql "$DATABASE_URL" -c "SELECT 1"` 成功**）：
+
+```bash
 psql "$DATABASE_URL" -f db/schema_base.sql
 psql "$DATABASE_URL" -f db/schema_kg.sql
 psql "$DATABASE_URL" -f db/schema_analysis.sql
@@ -108,6 +165,7 @@ cp .env.example .env
 
 ```bash
 cp .env.example .env
+psql "$DATABASE_URL" -c "SELECT 1"    # 确认 PostgreSQL 已启动
 python pipeline/parse/mineru_parse.py
 python -m pipeline.ingest.ingest --with-relations --force
 python -m pipeline.qa.cli --report-id 1 --query "2025年营业总收入是多少"

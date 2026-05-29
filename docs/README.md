@@ -20,6 +20,7 @@ CN Equity Report Analyzer — 上市公司 PDF 年报 → 结构化知识库 →
 | QA / analysis / report | [guides/consumption.md](guides/consumption.md) |
 | golden 回归 | [guides/evaluation.md](guides/evaluation.md) |
 | 环境变量与 YAML | [operations/setup.md#配置](operations/setup.md#配置) |
+| PostgreSQL 安装与启动 | [operations/setup.md#postgresql-安装与启动](operations/setup.md#postgresql-安装与启动) |
 | 全部 CLI | [operations/cli-reference.md](operations/cli-reference.md) |
 | 表结构 + 验收 SQL | [operations/database.md](operations/database.md) |
 
