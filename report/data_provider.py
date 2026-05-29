@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pipeline.ingest.db import connect
+from pipeline.db import connect
 
 ENTITY_COLORS = {
     "company": "#2563eb",
@@ -107,12 +107,85 @@ def _build_edge(
     }
 
 
+def _merge_edge_labels(edges: list[dict]) -> str:
+    labels: list[str] = []
+    seen: set[str] = set()
+    for edge in edges:
+        attrs = edge.get("attrs") or {}
+        title = attrs.get("title")
+        candidate = str(title or edge.get("label") or "").strip()
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        labels.append(candidate)
+    if labels:
+        return " · ".join(labels)
+    return str(edges[0].get("label") or "")
+
+
+def _merge_parallel_edges(edges: list[dict]) -> list[dict]:
+    """Merge same (relation_type, from, to) edges for cleaner graph rendering."""
+    merge_types = {"executive_of", "director_of", "actual_controller_of"}
+    buckets: dict[tuple[str, int, int], list[dict]] = {}
+    for edge in edges:
+        relation_type = edge["relation_type"]
+        if relation_type not in merge_types:
+            continue
+        key = (relation_type, edge["from_id"], edge["to_id"])
+        buckets.setdefault(key, []).append(edge)
+
+    merged_keys = {key for key, group in buckets.items() if len(group) > 1}
+    if not merged_keys:
+        return edges
+
+    result: list[dict] = []
+    emitted: set[tuple[str, int, int]] = set()
+    for edge in edges:
+        relation_type = edge["relation_type"]
+        key = (relation_type, edge["from_id"], edge["to_id"])
+        if relation_type not in merge_types or key not in merged_keys:
+            result.append(edge)
+            continue
+        if key in emitted:
+            continue
+        emitted.add(key)
+        group = buckets[key]
+        primary = dict(group[0])
+        primary["label"] = _merge_edge_labels(group)
+        attrs = dict(primary.get("attrs") or {})
+        titles = []
+        for item in group:
+            title = (item.get("attrs") or {}).get("title")
+            if title and title not in titles:
+                titles.append(str(title))
+        if titles:
+            attrs["title"] = " · ".join(titles)
+        primary["attrs"] = attrs
+
+        evidence: list[dict] = []
+        seen_evidence: set[tuple] = set()
+        for item in group:
+            for ev in item.get("evidence") or []:
+                signature = (ev.get("snippet"), ev.get("section_key"), ev.get("page_num"))
+                if signature in seen_evidence:
+                    continue
+                seen_evidence.add(signature)
+                evidence.append(ev)
+        primary["evidence"] = evidence
+        primary["merged_count"] = len(group)
+        primary["merged_relation_ids"] = [item["id"] for item in group]
+        result.append(primary)
+    return result
+
+
 def build_views(all_nodes: list[dict], all_edges: list[dict]) -> dict[str, dict]:
     node_by_id = {node["id"]: node for node in all_nodes}
     views: dict[str, dict] = {}
 
     for relation_type in RELATION_TAB_ORDER:
-        typed_edges = [edge for edge in all_edges if edge["relation_type"] == relation_type]
+        typed_edges = _merge_parallel_edges(
+            [edge for edge in all_edges if edge["relation_type"] == relation_type]
+        )
         used_ids: set[int] = set()
         for edge in typed_edges:
             used_ids.add(edge["from_id"])

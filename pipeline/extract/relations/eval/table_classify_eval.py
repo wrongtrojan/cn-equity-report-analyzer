@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 from pipeline.extract.text.table_classify import guess_table_type
-from pipeline.ingest.db import connect
+from pipeline.db import connect
 
 EVAL_PATH = Path(__file__).resolve().parent / "golden_tables.json"
 

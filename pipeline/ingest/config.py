@@ -3,13 +3,12 @@ from pathlib import Path
 import os
 
 import pipeline.env  # noqa: F401 — load project-root .env
+from pipeline.db import DATABASE_URL
 
 INGEST_DIR = Path(__file__).resolve().parent
 PIPELINE_DIR = INGEST_DIR.parent
 PARSE_RESULT_DIR = PIPELINE_DIR / "parse" / "parse_result"
 PARSE_INPUT_DIR = PIPELINE_DIR / "parse" / "input"
-
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://trojan@localhost:5433/re")
 
 # embedding 配置
 EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-m3")

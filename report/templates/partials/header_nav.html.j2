@@ -1,0 +1,13 @@
+{% set nav_modes = [("overview", "基本信息"), ("graph", "关系图谱"), ("analysis", "经营状况")] %}
+<header class="page-header">
+  <div class="header-main">
+    <p class="header-kicker">CN Equity Report</p>
+    <h1>{{ meta.company_name }}</h1>
+    <div class="subtitle">{{ meta.stock_code }} · {{ meta.report_year }} 年报</div>
+  </div>
+  <nav class="mode-nav" aria-label="报告模式">
+    {% for m, label in nav_modes %}
+    <a class="mode-link{% if mode == m %} active{% endif %}" href="../{{ m }}/index.html">{{ label }}</a>
+    {% endfor %}
+  </nav>
+</header>

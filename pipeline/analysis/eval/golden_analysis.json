@@ -1,0 +1,29 @@
+[
+  {
+    "type": "must_flag",
+    "report_id": 1,
+    "item_name": "营业总收入",
+    "rule_id": "yoy_spike"
+  },
+  {
+    "type": "must_flag",
+    "report_id": 1,
+    "item_name": "经营活动产生的现金流量净额",
+    "rule_id": "yoy_sign_flip"
+  },
+  {
+    "type": "must_explain",
+    "report_id": 1,
+    "item_contains": "营业总收入",
+    "min_explanations": 1
+  },
+  {
+    "type": "run_exists",
+    "report_id": 1
+  },
+  {
+    "type": "min_snapshots",
+    "report_id": 1,
+    "min_count": 6
+  }
+]

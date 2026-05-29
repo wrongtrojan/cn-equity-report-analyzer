@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-27T15:25:29+00:00",
+  "generated_at": "2026-05-29T08:05:06+00:00",
   "golden_file": "/home/trojan/workspace/dev/RE/pipeline/qa/eval/golden_questions.json",
   "summary": {
     "total": 23,
-    "auto_passed": 21,
-    "auto_warn": 2
+    "auto_passed": 23,
+    "auto_warn": 0
   },
   "results": [
     {
@@ -21,6 +21,11 @@
         "notes": "期望：16,067,741,039.51元（约160.68亿元），年度KPI口径"
       },
       "answer": "2025年营业总收入为16,067,741,039.51元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中明确给出2025年营业总收入数值，且有两个来源一致。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]",
@@ -127,6 +132,11 @@
         "notes": "期望：3,485,587,013.94元，2025Q1季度口径"
       },
       "answer": "2025年第一季度营业总收入为3,485,587,013.94元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据直接给出了2025Q1营业总收入的具体数值。"
+      },
       "citations": [
         "[quarterly_financials p.7]"
       ],
@@ -197,6 +207,11 @@
         "notes": "期望：3,370,780,510.96元，2025Q2"
       },
       "answer": "2025年第二季度营业总收入为3,370,780,510.96元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据直接给出了2025Q2营业总收入的精确数值。"
+      },
       "citations": [
         "[quarterly_financials p.7]"
       ],
@@ -267,6 +282,11 @@
         "notes": "期望：4,732,581,590.06元，2025Q3"
       },
       "answer": "2025年第三季度营业总收入为4,732,581,590.06元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据直接给出了2025Q3营业总收入的具体数值。"
+      },
       "citations": [
         "[quarterly_financials p.7]"
       ],
@@ -337,6 +357,11 @@
         "notes": "期望：4,478,791,924.55元，2025Q4"
       },
       "answer": "2025年第四季度营业总收入为4,478,791,924.55元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "最高证据分 1.15；证据 1 条"
+      },
       "citations": [
         "[quarterly_financials p.7]"
       ],
@@ -406,7 +431,12 @@
         "min_evidence": 1,
         "notes": "期望：11,604,343,090.16元，2024年度"
       },
-      "answer": "2024年营业总收入为11,604,343,090.16元。",
+      "answer": "2024年营业总收入为11,604,343,090.16元（约116.04亿元）。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中明确给出2024年营业总收入（元）为11604343090.1600元，且有两个来源一致确认。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]",
@@ -508,7 +538,12 @@
         "min_evidence": 1,
         "notes": "期望：38.46%"
       },
-      "answer": "2025年营业总收入同比增长约38.46%。\n\n计算过程：2025年营业总收入为16,067,741,039.51元，2024年营业总收入为11,604,343,090.16元，同比增长率 = (16,067,741,039.51 - 11,604,343,090.16) / 11,604,343,090.16 ≈ 38.46%。",
+      "answer": "2025年营业总收入同比增长约38.46%。\n\n计算依据：\n· 2025年营业总收入：16,067,741,039.51元\n· 2024年营业总收入：11,604,343,090.16元\n· 同比增长率 = (16,067,741,039.51 - 11,604,343,090.16) / 11,604,343,090.16 ≈ 38.46%",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据直接提供了2024年和2025年的营业总收入数值，可精确计算同比增长率。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]",
@@ -624,9 +659,24 @@
             "table_type_guess": "income_statement",
             "is_ratio": false
           }
+        },
+        {
+          "source_type": "financial_fact",
+          "content": "[income/year] 2025 一、营业收入 = 4531884934.7200 元",
+          "section_key": "financial_statements",
+          "page_num": 76,
+          "score": 1.22,
+          "metadata": {
+            "item_name": "一、营业收入",
+            "period_label": "2025",
+            "period_kind": "year",
+            "stmt_type": "income",
+            "table_type_guess": "income_statement",
+            "is_ratio": false
+          }
         }
       ],
-      "evidence_count": 5,
+      "evidence_count": 6,
       "auto_check": {
         "passed": true,
         "issues": []
@@ -646,20 +696,30 @@
         "notes": "期望：12,084,594,947.22元，年度KPI"
       },
       "answer": "2025年归属于上市公司股东的净利润为12,084,594,947.22元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中直接给出了2025年归属于上市公司股东的净利润（元）为12084594947.2200元，且多个来源一致。"
+      },
       "citations": [
         "[key_financials p.7]",
-        "[financial_statements p.74]"
+        "[financial_statements p.74]",
+        "[shareholder_section p.54]"
       ],
       "normalized": {
-        "intent": "numeric",
+        "intent": "relational",
         "canonical_question": "2025年归属于上市公司股东的净利润是多少",
         "report_year": 2025,
         "entities": [
           "东方财富信息股份有限公司"
         ],
         "section_keys": [
-          "key_financials",
-          "financial_statements"
+          "top10_shareholders",
+          "shareholder_section",
+          "subsidiaries",
+          "directors_supervisors",
+          "related_parties",
+          "corporate_governance"
         ],
         "sql_targets": {
           "item_names": [
@@ -758,9 +818,114 @@
             "table_type_guess": "income_statement",
             "is_ratio": false
           }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "其实 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=19.38%, share_count=3,062,162,258, shareholder_nature=境内自然人) | 其实 | 19.38% | 3,062,162,258 | 境内自然人",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 327,
+            "relation_type": "shareholder_of",
+            "subject": "其实",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "19.38%",
+              "share_count": "3,062,162,258",
+              "shareholder_nature": "境内自然人"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "香港中央结算有限公司 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=2.41%, share_count=381,040,975, shareholder_nature=境外法人) | 香港中央结算有限公司 | 2.41% | 381,040,975 | 境外法人",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 328,
+            "relation_type": "shareholder_of",
+            "subject": "香港中央结算有限公司",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "2.41%",
+              "share_count": "381,040,975",
+              "shareholder_nature": "境外法人"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=2.20%, share_count=347,616,461, shareholder_nature=其他) | 中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金 | 2.20% | 347,616,461 | 其他",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 329,
+            "relation_type": "shareholder_of",
+            "subject": "中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "2.20%",
+              "share_count": "347,616,461",
+              "shareholder_nature": "其他"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=1.57%, share_count=248,157,012, shareholder_nature=其他) | 中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金 | 1.57% | 248,157,012 | 其他",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 330,
+            "relation_type": "shareholder_of",
+            "subject": "中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "1.57%",
+              "share_count": "248,157,012",
+              "shareholder_nature": "其他"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "中国建设银行股份有限公司一华宝中证全指证券公司交易型开放式指数证券投资基金 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=1.53%, share_count=242,269,587, shareholder_nature=其他) | 中国建设银行股份有限公司一华宝中证全指证券公司交易型开放式指数证券投资基金 | 1.53% | 242,269,587 | 其他",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 331,
+            "relation_type": "shareholder_of",
+            "subject": "中国建设银行股份有限公司一华宝中证全指证券公司交易型开放式指数证券投资基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "1.53%",
+              "share_count": "242,269,587",
+              "shareholder_nature": "其他"
+            }
+          }
         }
       ],
-      "evidence_count": 5,
+      "evidence_count": 10,
       "auto_check": {
         "passed": true,
         "issues": []
@@ -779,7 +944,12 @@
         "min_evidence": 1,
         "notes": "期望：2,715,030,716.13元，2025Q1"
       },
-      "answer": "2025年第一季度归属于上市公司股东的净利润为2,715,030,716.13元。\n\n归属于上市公司股东的扣除非经常性损益的净利润为2,698,447,664.45元。",
+      "answer": "2025年第一季度归属于上市公司股东的净利润为2,715,030,716.13元。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据直接提供了2025Q1归属于上市公司股东的净利润的具体数值。"
+      },
       "citations": [
         "[quarterly_financials p.7]"
       ],
@@ -860,7 +1030,12 @@
         "min_evidence": 1,
         "notes": "期望：-10,222,245,645.14元（负数）"
       },
-      "answer": "2025年经营活动产生的现金流量净额为 -10,222,245,645.14 元。",
+      "answer": "2025年经营活动产生的现金流量净额为-10,222,245,645.14元（即约-102.22亿元）。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中两项来源均直接给出相同数值，且分别来自关键财务指标和现金流量表，数据一致，置信度高。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.145]"
@@ -945,6 +1120,11 @@
         "notes": "期望：0.7650元/股"
       },
       "answer": "2025年基本每股收益为0.7650元/股。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中明确给出2025年基本每股收益为0.7650元/股，且来自两个独立来源（关键财务指标和利润表），数据一致。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]"
@@ -1029,7 +1209,12 @@
         "min_evidence": 1,
         "notes": "期望：6.64%（比例，不是金额）"
       },
-      "answer": "2025年研发投入占营业总收入比例为6.6400%。",
+      "answer": "2025年研发投入占营业总收入比例为6.64%。",
+      "confidence": {
+        "level": "high",
+        "score": 0.78,
+        "reason": "证据直接给出了2025年研发投入占营业总收入比例的数值，为6.6400%。"
+      },
       "citations": [
         "[mda p.16]"
       ],
@@ -1042,8 +1227,8 @@
           "营业总收入"
         ],
         "section_keys": [
-          "key_financials",
-          "financial_statements"
+          "研发投入",
+          "营业总收入"
         ],
         "sql_targets": {
           "item_names": [
@@ -1122,6 +1307,11 @@
         "notes": "期望：124,282,846,610.66元，期末时点"
       },
       "answer": "2025年末货币资金为124,282,846,610.66元。",
+      "confidence": {
+        "level": "high",
+        "score": 0.96,
+        "reason": "证据直接来自财务报表，明确标注为2025年时点货币资金数值。"
+      },
       "citations": [
         "[financial_statements p.69]"
       ],
@@ -1189,6 +1379,11 @@
         "notes": "期望：392,933,744,976.20元"
       },
       "answer": "2025年末资产总计为392,933,744,976.20元。",
+      "confidence": {
+        "level": "high",
+        "score": 0.96,
+        "reason": "证据直接给出了2025年末资产总计的数值，来源为资产负债表，置信度高。"
+      },
       "citations": [
         "[financial_statements p.69]"
       ],
@@ -1257,6 +1452,11 @@
         "notes": "期望：2,946,250,105.99元"
       },
       "answer": "2025年末商誉为2,946,250,105.99元。",
+      "confidence": {
+        "level": "high",
+        "score": 0.96,
+        "reason": "证据直接来自财务报表，明确给出2025年时点商誉数值。"
+      },
       "citations": [
         "[financial_statements p.69]"
       ],
@@ -1323,7 +1523,12 @@
         "min_evidence": 1,
         "notes": "期望：同A1，16,067,741,039.51元；测试「营收→营业总收入」别名"
       },
-      "answer": "2025年营业总收入为16,067,741,039.51元。",
+      "answer": "2025年营业总收入为16,067,741,039.51元（约160.68亿元）。\n\n注：证据中同时出现“营业总收入”和“营业收入”两个指标，其中“营业总收入”为160.68亿元，“营业收入”为45.32亿元。根据会计准则，营业总收入包含营业收入及其他业务收入等，因此以营业总收入作为营收口径。",
+      "confidence": {
+        "level": "high",
+        "score": 0.95,
+        "reason": "证据直接提供了2025年营业总收入的具体数值，且来源为财务摘要和利润表，数据一致，可直接作答。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]",
@@ -1334,7 +1539,7 @@
         "canonical_question": "2025年营收是多少",
         "report_year": 2025,
         "entities": [
-          "东方财富信息股份有限公司"
+          "营收"
         ],
         "section_keys": [
           "key_financials",
@@ -1422,11 +1627,23 @@
       "query": "公司董事长是谁",
       "reference": {
         "category": "relational",
+        "expected_keywords": [
+          "其实"
+        ],
         "min_evidence": 1,
+        "min_confidence_level": "medium",
         "notes": "期望：其实"
       },
-      "answer": "年报未披露",
-      "citations": [],
+      "answer": "公司董事长是其实。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中知识图谱关系明确显示其实担任东方财富信息股份有限公司董事长，且状态为现任。"
+      },
+      "citations": [
+        "[corporate_governance p.34]",
+        "[directors_supervisors p.28]"
+      ],
       "normalized": {
         "intent": "relational",
         "canonical_question": "公司董事长是谁",
@@ -1435,7 +1652,7 @@
           "东方财富信息股份有限公司"
         ],
         "section_keys": [
-          "directors"
+          "corporate_governance"
         ],
         "sql_targets": {
           "item_names": [
@@ -1456,13 +1673,103 @@
         "vector_query": "东方财富信息股份有限公司董事长",
         "needs_previous_context": false
       },
-      "evidence": [],
-      "evidence_count": 0,
+      "evidence": [
+        {
+          "source_type": "structured_table",
+          "content": "表#36 八、董事会下设专门委员会在报告期内的情况 [[\"审计委员会\", \"朱振梅、李智平、其实\", \"5\", \"2025年03月04日\", \"审议通过《关于拟聘请公司2025年度审计机构的议案》\", \"\", \"审阅了公司《2024年第四季度审计监察部工作报告》\", \"无\"], [\"2025年03月13日\", \"审议通过《2024年度财务决算报告》《2024年年度报告及摘要》《2024年度内部控制自我评价报告》《关于同意聘请公司2025年度审计机构的议案》《关于公司2025年度风险偏好及风险容忍度的议案》\", \"\", \"\", \"无\"]]",
+          "section_key": "corporate_governance",
+          "page_num": 34,
+          "score": 0.8,
+          "metadata": {
+            "table_seq": 36,
+            "table_type_guess": null
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "其实 --[director_of]--> 东方财富信息股份有限公司 (title=董事, status=现任) | 其实 | 董事、董事长",
+          "section_key": "directors_supervisors",
+          "page_num": 28,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 301,
+            "relation_type": "director_of",
+            "subject": "其实",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "title": "董事",
+              "status": "现任"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "其实 --[executive_of]--> 东方财富信息股份有限公司 (title=董事长, status=现任) | 其实 | 董事、董事长",
+          "section_key": "directors_supervisors",
+          "page_num": 28,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 302,
+            "relation_type": "executive_of",
+            "subject": "其实",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "title": "董事长",
+              "status": "现任"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "黄建海 --[director_of]--> 东方财富信息股份有限公司 (title=董事, status=现任) | 黄建海 | 董事、副董事长、总经理、副总经理、财务总监、董事会秘书",
+          "section_key": "directors_supervisors",
+          "page_num": 28,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 303,
+            "relation_type": "director_of",
+            "subject": "黄建海",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "title": "董事",
+              "status": "现任"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "黄建海 --[executive_of]--> 东方财富信息股份有限公司 (title=副董事长, status=现任) | 黄建海 | 董事、副董事长、总经理、副总经理、财务总监、董事会秘书",
+          "section_key": "directors_supervisors",
+          "page_num": 28,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 304,
+            "relation_type": "executive_of",
+            "subject": "黄建海",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "title": "副董事长",
+              "status": "现任"
+            }
+          }
+        }
+      ],
+      "evidence_count": 5,
       "auto_check": {
-        "passed": false,
-        "issues": [
-          "evidence count 0 < min_evidence 1"
-        ]
+        "passed": true,
+        "issues": []
       }
     },
     {
@@ -1474,7 +1781,12 @@
         "min_evidence": 1,
         "notes": "期望：300059"
       },
-      "answer": "300059",
+      "answer": "东方财富信息股份有限公司的股票代码为300059。",
+      "confidence": {
+        "level": "high",
+        "score": 0.78,
+        "reason": "证据中明确说明股票代码为300059。"
+      },
       "citations": [
         "[financial_statements]",
         "[mda]"
@@ -1487,7 +1799,7 @@
           "东方财富信息股份有限公司"
         ],
         "section_keys": [
-          "公司基本信息"
+          "company_profile"
         ],
         "sql_targets": {
           "item_names": [
@@ -1558,9 +1870,42 @@
             "chunk_index": 0,
             "distance": 0.31961598039816386
           }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "根据上海市科学技术委员会、上海市财政局、国家税务总局上海市税务局于 2022年11月和 2025年12月联合颁发的高新技术企业证书，东方财富信息股份有限公司被认定为高新技术企业，2024年度及2025年度实际适用企业所得税税率为15%。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.6538318395614809,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.34616816043851906
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "我们审计了东方财富信息股份有限公司的财务报表，包括2025年12月31日的合并及公司资产负债表，2025年度的合并及公司利润表、股东权益变动表和现金流量表以及相关财务报表附注。\n\n我们认为，后附的东方财富信息股份有限公司的财务报表在所有重大方面按照企业会计准则的规定编制，公允反映了东方财富信息股份有限公司2025年12月31日的合并及公司财务状况以及2025年度的合并及公司经营成果和现金流量。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.6360575394561885,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3639424605438115
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "管理层负责按照企业会计准则的规定编制财务报表，使其实现公允反映，并设计、执行和维护必要的内部控制，以使财务报表不存在由于舞弊或错误导致的重大错报。\n\n在编制财务报表时，管理层负责评估东方财富信息股份有限公司的持续经营能力，披露与持续经营相关的事项（如适用），并运用持续经营假设，除非计划进行清算、终止运营或别无其他现实的选择。\n\n治理层负责监督东方财富信息股份有限公司的财务报告过程。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.6157791614532646,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3842208385467354
+          }
         }
       ],
-      "evidence_count": 5,
+      "evidence_count": 8,
       "auto_check": {
         "passed": true,
         "issues": []
@@ -1575,8 +1920,15 @@
         "min_evidence": 1,
         "notes": "期望：其实（或前十大股东表）"
       },
-      "answer": "年报未披露",
-      "citations": [],
+      "answer": "第一大股东是其实，持股比例为19.38%，持股数量为3,062,162,258股，股东性质为境内自然人。",
+      "confidence": {
+        "level": "high",
+        "score": 1.0,
+        "reason": "证据中明确列出其实的持股比例最高（19.38%），且其他股东持股比例均远低于此，可直接判断其为第一大股东。"
+      },
+      "citations": [
+        "[shareholder_section p.54]"
+      ],
       "normalized": {
         "intent": "relational",
         "canonical_question": "第一大股东是谁",
@@ -1608,13 +1960,96 @@
         "vector_query": "东方财富信息股份有限公司第一大股东",
         "needs_previous_context": false
       },
-      "evidence": [],
-      "evidence_count": 0,
+      "evidence": [
+        {
+          "source_type": "kg_relation",
+          "content": "其实 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=19.38%, share_count=3,062,162,258, shareholder_nature=境内自然人) | 其实 | 19.38% | 3,062,162,258 | 境内自然人",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 327,
+            "relation_type": "shareholder_of",
+            "subject": "其实",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "person",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "19.38%",
+              "share_count": "3,062,162,258",
+              "shareholder_nature": "境内自然人"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "香港中央结算有限公司 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=2.41%, share_count=381,040,975, shareholder_nature=境外法人) | 香港中央结算有限公司 | 2.41% | 381,040,975 | 境外法人",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 328,
+            "relation_type": "shareholder_of",
+            "subject": "香港中央结算有限公司",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "2.41%",
+              "share_count": "381,040,975",
+              "shareholder_nature": "境外法人"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=2.20%, share_count=347,616,461, shareholder_nature=其他) | 中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金 | 2.20% | 347,616,461 | 其他",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 329,
+            "relation_type": "shareholder_of",
+            "subject": "中国建设银行股份有限公司一国泰中证全指证券公司交易型开放式指数证券投资基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "2.20%",
+              "share_count": "347,616,461",
+              "shareholder_nature": "其他"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金 --[shareholder_of]--> 东方财富信息股份有限公司 (ratio=1.57%, share_count=248,157,012, shareholder_nature=其他) | 中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金 | 1.57% | 248,157,012 | 其他",
+          "section_key": "shareholder_section",
+          "page_num": 54,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 330,
+            "relation_type": "shareholder_of",
+            "subject": "中国工商银行股份有限公司一易方达创业板交易型开放式指数证券投资基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "organization",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "ratio": "1.57%",
+              "share_count": "248,157,012",
+              "shareholder_nature": "其他"
+            }
+          }
+        }
+      ],
+      "evidence_count": 4,
       "auto_check": {
-        "passed": false,
-        "issues": [
-          "evidence count 0 < min_evidence 1"
-        ]
+        "passed": true,
+        "issues": []
       }
     },
     {
@@ -1626,7 +2061,12 @@
         "min_evidence": 1,
         "notes": "期望：证券、基金销售、金融电子商务等，MD&A叙述"
       },
-      "answer": "公司主要业务包括证券业务、金融电子商务服务业务、金融数据服务业务等。\n\n· 证券业务：主要依托互联网财富管理生态圈，通过东方财富证券、东方财富期货等公司，为海量用户提供证券、期货经纪等服务。\n· 金融电子商务服务业务：主要通过天天基金，为用户提供基金销售服务，提供一站式互联网基金理财服务。\n· 金融数据服务业务：主要以智能金融数据终端为载体，通过PC端、移动端，向海量用户提供专业化金融数据服务。",
+      "answer": "公司主要业务包括：\n\n1. 证券业务：依托互联网财富管理生态圈，通过东方财富证券、东方财富期货等公司，为海量用户提供证券、期货经纪等服务。\n\n2. 金融电子商务服务业务：主要通过天天基金，为用户提供基金销售服务，提供一站式互联网基金理财服务。\n\n3. 金融数据服务业务：以智能金融数据终端为载体，通过PC端、移动端，向海量用户提供专业化金融数据服务。",
+      "confidence": {
+        "level": "high",
+        "score": 0.95,
+        "reason": "证据中明确列出了公司主要业务及具体服务内容，直接支持结论。"
+      },
       "citations": [
         "[mda]",
         "[financial_statements]"
@@ -1707,9 +2147,42 @@
             "chunk_index": 0,
             "distance": 0.3502241342859016
           }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "公司依托于“东方财富”树立的品牌知名度和投资者认可度，形成了公司强大的品牌优势，同时公司通过持续优化服务效能与加强品牌推广力度，进一步增强用户粘性、提升用户体验，进一步提高品牌美誉度和认知度，巩固品牌价值优势，积极促进公司各项业务的有序开展。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7457811815198727,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.351494624765328
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "公司持续拓展和优化财富管理生态圈，打造个性化、智能化、专业化的全方位财富管理服务体系，不断提升金融服务水平和综合竞争实力。东方财富证券聚焦财富管理与资管业务，致力于成为领先的创新互联网券商，持续推进资管业务创新及产品线建设，以大类资产配置为方向，不断丰富产品体系，满足不同客户的资产配置需求。同时，不断完善机构客户综合服务解决方案，在研究、做市等业务领域积累市场口碑，提升公司综合金融品牌影响力。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7234323145827923,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3709284221019197
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "报告期内，我国经济在转型中持续向好，高质量发展扎实推进。在一系列深化投融资综合改革政策的引领下，市场信心显著提振，公司坚定聚焦主业，始终坚持以用户需求为中心，保持战略定力，充分把握资本市场高质量发展及新一轮科技革命的双重机遇，着力提升研发动力、产品实力、服务能力，迈入高质量发展新阶段。报告期内，公司实现营业总收入 160.68 亿元，同比增长 38.46%；实现归属于上市公司股东净利润120.85亿元，同比增长25.75%。\n\n报告期内，东方财富证券积极把握市场机遇，坚持以用户为中心，夯实零售经纪业务基础，经纪业务股基交易额38.46万亿元2。报告期内，东方财富证券获批上市证券做市业务资质，着力推进上市基金做市业务，积极布局北交所、科创板股票做市业务，稳定发展银行间和交易所债券做市业务，持续拓宽服务覆盖面，不断提升做市服务质效。同时，东方财富证券加强机构客群、企业客群的服务，稳步推进财富管理和资产管理业务，积极构建上市公司服务新生态，各项业务持续合规稳健发展，营业收入和净利润同比实现稳步增长，资本实力进一步增强。\n\n报告期内，天天基金持续深化科技驱动服务革新理念，着力构建覆盖用户全生命周期的数智化服务体系。通过 AI 应用深度拓展与平台功能交互逻辑持续优化，打造全链路服务矩阵，为用户构建智能对话、智能选基、智能投资三位一体的价值共生体系，推动财富管理服务向更智能、更贴心、更有温度持续迭代升级。截至报告期末，天天基金共上线 164 家公募基金管理人 21,930 只基金产品3，非货币市场公募基金保有规模7,701.33亿元，权益类基金保有规模4,456.17亿元。报告期内，公司互联网金融电子商务平台共计实现基金认（申）购（含定投）交易257,671,982笔，基金销售额为26,055.84亿元，其中非货币型基金共计实现认（申）购（含定投）交易166,662,521笔，销售额为15,814.26亿元。\n\n报告期内，妙想 AI 能力全面融入赋能公司各产品各业务条线，以 AI+功能重塑用户一站式财富管理体验，进一步巩固和提升公司市场地位。妙想大模型上线东方财富旗下各产品端，将专",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.7182084061851068,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.37547095114338536
+          }
         }
       ],
-      "evidence_count": 5,
+      "evidence_count": 8,
       "auto_check": {
         "passed": true,
         "issues": []
@@ -1724,10 +2197,16 @@
         "min_evidence": 1,
         "notes": "期望：提及营收+38.46%、净利润+25.75%等"
       },
-      "answer": "2025年公司业绩表现良好，核心财务指标如下：\n\n· 营业总收入：160.68亿元，同比增长38.46%\n· 归属于上市公司股东的净利润：120.85亿元，同比增长25.75%\n· 归属于上市公司股东的扣除非经常性损益的净利润：116.54亿元\n\n报告期内，公司坚定聚焦主业，充分把握资本市场高质量发展及新一轮科技革命的双重机遇，迈入高质量发展新阶段。",
+      "answer": "2025年公司业绩表现良好，营业收入和净利润均实现同比增长。\n\n· 营业总收入：160.68亿元，同比增长38.46%。\n· 归属于上市公司股东的净利润：120.85亿元，同比增长25.75%。\n· 归属于上市公司股东的扣除非经常性损益的净利润：116.54亿元。\n\n公司主要子公司东方财富证券和天天基金在报告期内也实现了稳健发展。东方财富证券经纪业务股基交易额38.46万亿元，获批上市证券做市业务资质；天天基金非货币市场公募基金保有规模7,701.33亿元，权益类基金保有规模4,456.17亿元，基金销售额为26,055.84亿元。",
+      "confidence": {
+        "level": "medium",
+        "score": 0.75,
+        "reason": "多源证据（财务数据、管理层讨论与分析）高度一致，直接支持业绩结论。 系统根据证据强度与问题类型做了置信度校准。"
+      },
       "citations": [
         "[key_financials p.7]",
         "[financial_statements p.74]",
+        "[subsidiaries p.21]",
         "[mda]",
         "[financial_statements]"
       ],
@@ -1829,18 +2308,87 @@
           }
         },
         {
-          "source_type": "financial_fact",
-          "content": "[income/year] 2025 1.持续经营净利润（净亏损以“-”号填列） = 12084594947.2200 元",
-          "section_key": "financial_statements",
-          "page_num": 74,
-          "score": 1.22,
+          "source_type": "kg_relation",
+          "content": "东方财富证券 --[subsidiary_of]--> 东方财富信息股份有限公司 (company_type=子公司, main_business=证券经纪、融资融券业务等, registered_capital=127.00) | 东方财富证券 | 子公司",
+          "section_key": "subsidiaries",
+          "page_num": 21,
+          "score": 1.0,
           "metadata": {
-            "item_name": "1.持续经营净利润（净亏损以“-”号填列）",
-            "period_label": "2025",
-            "period_kind": "year",
-            "stmt_type": "income",
-            "table_type_guess": "income_statement",
-            "is_ratio": false
+            "relation_id": 297,
+            "relation_type": "subsidiary_of",
+            "subject": "东方财富证券",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "subsidiary",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "company_type": "子公司",
+              "main_business": "证券经纪、融资融券业务等",
+              "registered_capital": "127.00"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "东方财富信息股份有限公司 --[invest_in]--> 东方财富证券 (company_type=子公司, main_business=证券经纪、融资融券业务等, registered_capital=127.00) | 东方财富证券 | 子公司",
+          "section_key": "subsidiaries",
+          "page_num": 21,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 298,
+            "relation_type": "invest_in",
+            "subject": "东方财富信息股份有限公司",
+            "object": "东方财富证券",
+            "subject_type": "company",
+            "object_type": "subsidiary",
+            "source": "rule",
+            "attrs": {
+              "company_type": "子公司",
+              "main_business": "证券经纪、融资融券业务等",
+              "registered_capital": "127.00"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "天天基金 --[subsidiary_of]--> 东方财富信息股份有限公司 (company_type=子公司, main_business=基金销售, registered_capital=3.38) | 天天基金 | 子公司",
+          "section_key": "subsidiaries",
+          "page_num": 21,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 299,
+            "relation_type": "subsidiary_of",
+            "subject": "天天基金",
+            "object": "东方财富信息股份有限公司",
+            "subject_type": "subsidiary",
+            "object_type": "company",
+            "source": "rule",
+            "attrs": {
+              "company_type": "子公司",
+              "main_business": "基金销售",
+              "registered_capital": "3.38"
+            }
+          }
+        },
+        {
+          "source_type": "kg_relation",
+          "content": "东方财富信息股份有限公司 --[invest_in]--> 天天基金 (company_type=子公司, main_business=基金销售, registered_capital=3.38) | 天天基金 | 子公司",
+          "section_key": "subsidiaries",
+          "page_num": 21,
+          "score": 1.0,
+          "metadata": {
+            "relation_id": 300,
+            "relation_type": "invest_in",
+            "subject": "东方财富信息股份有限公司",
+            "object": "天天基金",
+            "subject_type": "company",
+            "object_type": "subsidiary",
+            "source": "rule",
+            "attrs": {
+              "company_type": "子公司",
+              "main_business": "基金销售",
+              "registered_capital": "3.38"
+            }
           }
         },
         {
@@ -1875,9 +2423,53 @@
             "chunk_index": 0,
             "distance": 0.3728710412979126
           }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "编制单位：东方财富信息股份有限公司\n\n2025 年 12 月 31 日  \n单位：元\n \n\n法定代表人：其实  \n主管会计工作负责人：程慧  \n会计机构负责人：徐翘楚",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.7131510972976685,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.28684890270233154
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "东方财富信息股份有限公司（以下简称“公司”或“本公司”）的前身系上海东财信息技术有限公司，本公司于2007年12月 20日改制为股份有限公司，2008年1月7日由上海东财信息技术股份有限公司更名为东方财富信息股份有限公司。本公司的控股股东、实际控制人为其实先生。本公司注册地址为上海市嘉定区宝安公路2999号1幢，经营地址为上海市徐汇区宛平南路88号东方财富大厦。\n\n根据本公司2009年第二次临时股东大会决议，并经中国证监会《关于核准东方财富信息股份有限公司首次公开发行股票并在创业板上市的批复》（证监许可[2010]249号）核准，公司向社会公开发行人民币普通股35,000,000股。经深圳证券交易所《关于东方财富信息股份有限公司人民币普通股股票在创业板上市的通知》（深证上[2010]89号）同意，本公司发行的人民币普通股股票在深圳证券交易所创业板上市，股票简称“东方财富”，股票代码“300059”。\n\n公司致力于构建人与财富的金融生态圈，提供财经、证券、基金、期货、社交服务等一站式互联网财富管理服务，为用户创造更多价值。本公司主营业务有证券业务、金融电子商务服务业务、金融数据服务业务等。\n\n本财务报表业经本公司董事会于 2026年 3月 18日决议批准报出。",
+          "section_key": "financial_statements",
+          "page_num": null,
+          "score": 0.696940142098658,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.30305985790134204
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "）交易166,662,521笔，销售额为15,814.26亿元。\n\n报告期内，妙想 AI 能力全面融入赋能公司各产品各业务条线，以 AI+功能重塑用户一站式财富管理体验，进一步巩固和提升公司市场地位。妙想大模型上线东方财富旗下各产品端，将专业普惠的 AI 服务触达惠及广大用户。妙想投研助理深度聚焦投研全流程痛点，AI 研究员以专业的思维链，端到端完成投研相关日常研究任务；上线深度研究+可视化报告功能，通过多 Agent 协作自主完成金融研究全流程，研究过程可追溯、可查看；支持将研究成果一键生成逻辑清晰、格式规范的动态网页。报告期内，妙想大模型技术能力进一步提升，垂类 Agentic 能力深度适配金融业务逻辑与专业场景，具备智能理解与规划、多轮工具调用能力，为妙想 AI 产品提供技术支撑；多模态能力可对视觉信息进行精准理解，在回答中实现图文结合输出，丰富用户信息获取方式与交互体验。报告期内，公司荣获“2025 福布斯中国人工智能科技企业”、“2025世界人工智能大会卓越人工智能引领者奖 SAIL Top30”、2025年“数据要素”大赛全国总决赛二等奖等荣誉。\n\n报告期内，公司持续加大投资者回报力度，坚持每年实施现金分红，分红水平较往年进一步提升。报告期内，公司完成 2024 年限制性股票激励计划首次授予限制性股票的第一个归属期限制性股票归属工作，并向198名限制性股票激励对象授予了预留限制性股票，有效激励和稳定核心团队，夯实公司高质量可持续发展人才基础。报告期内，公司坚持可持续稳健经营，深入推进 ESG 相关工作，积极贯彻落实《上市公司治理准则》《关于新〈公司法〉配套制度规则实施相关过渡期安排》等规定，优化公司治理架构，完善多项公司基础性制度，强化内部运营管理，持续提升治理水平，推动企业与社会、环境协调可持续发展。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.6958933773104335,
+          "metadata": {
+            "chunk_index": 1,
+            "distance": 0.39487532407788384
+          }
+        },
+        {
+          "source_type": "text_chunk",
+          "content": "公司持续构建和不断完善以“东方财富网”为核心的互联网财富管理生态圈，为海量用户提供集财经资讯、证券、基金、期货、社交服务等一站式互联网财富管理服务。公司凭借互联网财富管理生态体系，能够一站式满足投资者不同需求，形成了公司独特的业务场景优势，为公司持续发展构筑了深厚的护城河。",
+          "section_key": "mda",
+          "page_num": null,
+          "score": 0.6913586507608163,
+          "metadata": {
+            "chunk_index": 0,
+            "distance": 0.3988185645558119
+          }
         }
       ],
-      "evidence_count": 8,
+      "evidence_count": 15,
       "auto_check": {
         "passed": true,
         "issues": []
@@ -1890,9 +2482,15 @@
       "reference": {
         "category": "negative",
         "min_evidence": 0,
+        "max_confidence_level": "low",
         "notes": "期望：拒答/未披露（库中无2022 KPI）"
       },
       "answer": "年报未披露",
+      "confidence": {
+        "level": "none",
+        "score": 0.0,
+        "reason": "无可用证据"
+      },
       "citations": [],
       "normalized": {
         "intent": "numeric",
@@ -1942,9 +2540,15 @@
       "reference": {
         "category": "negative",
         "min_evidence": 0,
+        "max_confidence_level": "low",
         "notes": "期望：拒答/未披露（超出报告期）"
       },
       "answer": "年报未披露",
+      "confidence": {
+        "level": "none",
+        "score": 0.0,
+        "reason": "无可用证据"
+      },
       "citations": [],
       "normalized": {
         "intent": "numeric",

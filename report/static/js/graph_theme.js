@@ -110,20 +110,82 @@
       font: {
         size: 10,
         color: withAlpha(color, 0.92),
-        strokeWidth: 0,
+        strokeWidth: 2,
+        strokeColor: "#ffffff",
         face: "Inter, Noto Sans SC, sans-serif",
         align: "horizontal",
       },
       width: 1,
-      smooth: { type: "cubicBezier", forceDirection: "vertical", roundness: 0.2 },
+      smooth: { enabled: true, type: "dynamic", roundness: 0.35 },
       data: edge,
     };
   }
 
+  function estimateNodeSpacing(node) {
+    const label = String(node.label || "");
+    const isCompany = node.data?.entity_type === "company";
+    const charWidth = isCompany ? 11 : 9;
+    return Math.max(isCompany ? 120 : 72, label.length * charWidth + 36);
+  }
+
+  function applyFallbackLayout(nodes) {
+    const spacing = Math.max(...nodes.map((node) => estimateNodeSpacing(node)), 100);
+    return nodes.map((node, idx) => ({
+      ...node,
+      x: (idx - (nodes.length - 1) / 2) * spacing,
+      y: 0,
+      fixed: true,
+    }));
+  }
+
+  /** Spread multiple edges between the same node pair so labels remain readable. */
+  function spreadParallelEdges(edgeItems) {
+    const buckets = new Map();
+    edgeItems.forEach((edge, idx) => {
+      const key = `${edge.from}\0${edge.to}`;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push({ edge, idx });
+    });
+
+    const adjusted = new Array(edgeItems.length);
+    for (const group of buckets.values()) {
+      if (group.length === 1) {
+        adjusted[group[0].idx] = group[0].edge;
+        continue;
+      }
+
+      group.forEach(({ edge, idx }, i) => {
+        const total = group.length;
+        const centered = i - (total - 1) / 2;
+        let smooth;
+        if (total >= 4) {
+          const type = centered < 0 ? "curvedCW" : "curvedCCW";
+          const roundness = 0.28 + Math.abs(centered) * 0.18;
+          smooth = { enabled: true, type, roundness: Math.min(roundness, 0.82) };
+        } else if (centered === 0 && total % 2 === 1) {
+          smooth = { enabled: true, type: "cubicBezier", forceDirection: "horizontal", roundness: 0.12 };
+        } else {
+          const type = centered < 0 ? "curvedCW" : "curvedCCW";
+          const roundness = 0.24 + Math.abs(centered) * 0.14;
+          smooth = { enabled: true, type, roundness: Math.min(roundness, 0.68) };
+        }
+        adjusted[idx] = { ...edge, smooth };
+      });
+    }
+    return adjusted;
+  }
+
   function applyStarLayout(nodes, edges, companyNodeId) {
-    if (!companyNodeId) return nodes;
+    if (!companyNodeId) return applyFallbackLayout(nodes);
     const others = nodes.filter((n) => n.id !== companyNodeId);
-    const radius = Math.max(220, Math.min(420, others.length * 36));
+    if (!others.length) {
+      return nodes.map((node) => ({ ...node, x: 0, y: 0, fixed: true }));
+    }
+
+    const minSpacing = Math.max(...others.map((node) => estimateNodeSpacing(node)), 84);
+    const circumference = others.length * minSpacing;
+    const radius = Math.max(260, circumference / (2 * Math.PI));
+
     return nodes.map((node) => {
       if (node.id === companyNodeId) {
         return { ...node, x: 0, y: 0, fixed: true };
@@ -140,7 +202,7 @@
   }
 
   function applyHierarchyLayout(nodes, edges, companyNodeId, relationType) {
-    if (!companyNodeId) return nodes;
+    if (!companyNodeId) return applyFallbackLayout(nodes);
     const childIds = new Set();
     for (const edge of edges) {
       if (relationType === "subsidiary_of" && edge.to === companyNodeId) {
@@ -150,17 +212,27 @@
       }
     }
     const children = nodes.filter((n) => childIds.has(n.id));
-    const spread = Math.max(180, children.length * 140);
+    const orphans = nodes.filter((n) => n.id !== companyNodeId && !childIds.has(n.id));
+    const childSpacing = Math.max(...children.map((node) => estimateNodeSpacing(node)), 140);
+    const spread = Math.max(220, children.length * childSpacing);
+
     return nodes.map((node) => {
       if (node.id === companyNodeId) {
         return { ...node, x: 0, y: -100, fixed: true };
       }
-      const idx = children.findIndex((n) => n.id === node.id);
-      if (idx >= 0) {
-        const x = (idx - (children.length - 1) / 2) * (spread / Math.max(children.length, 1));
+      const childIdx = children.findIndex((n) => n.id === node.id);
+      if (childIdx >= 0) {
+        const x = (childIdx - (children.length - 1) / 2) * (spread / Math.max(children.length, 1));
         return { ...node, x, y: 110, fixed: true };
       }
-      return { ...node, fixed: true };
+      const orphanIdx = orphans.findIndex((n) => n.id === node.id);
+      if (orphanIdx >= 0) {
+        const orphanSpacing = Math.max(...orphans.map((item) => estimateNodeSpacing(item)), 120);
+        const orphanSpread = Math.max(220, orphans.length * orphanSpacing);
+        const x = (orphanIdx - (orphans.length - 1) / 2) * (orphanSpread / Math.max(orphans.length, 1));
+        return { ...node, x, y: 260, fixed: true };
+      }
+      return { ...node, x: 0, y: 260, fixed: true };
     });
   }
 
@@ -209,6 +281,7 @@
     relationColor,
     buildNodeVis,
     buildEdgeVis,
+    spreadParallelEdges,
     getNetworkOptions,
     layoutNodes,
   };

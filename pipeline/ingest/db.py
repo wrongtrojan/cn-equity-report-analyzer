@@ -2,17 +2,21 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
-import psycopg2
+from pipeline.db import connect, to_pgvector
 
-from .config import DATABASE_URL, DEFAULT_ALIASES
+from .config import DEFAULT_ALIASES
 
-
-def connect():
-    conn = psycopg2.connect(DATABASE_URL)
-    conn.autocommit = False
-    return conn
+__all__ = [
+    "clear_report_children",
+    "connect",
+    "get_ingest_fingerprint",
+    "load_aliases",
+    "to_pgvector",
+    "upsert_company",
+    "upsert_parsed_artifacts",
+    "upsert_report",
+]
 
 
 def load_aliases(conn) -> list[tuple[str, str, int]]:
@@ -129,6 +133,3 @@ def upsert_parsed_artifacts(cur, report_id, middle_path, md_path, images_dir, me
         ),
     )
 
-
-def to_pgvector(values: list[float]) -> str:
-    return "[" + ",".join(f"{v:.8f}" for v in values) + "]"

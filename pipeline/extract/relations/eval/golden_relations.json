@@ -42,6 +42,14 @@
     "attrs_contains": ["ratio"]
   },
   {
+    "type": "must_have_attrs",
+    "report_id": 1,
+    "subject": "其实",
+    "relation_type": "executive_of",
+    "attrs_contains": ["title"],
+    "attrs_match": {"title": "董事长"}
+  },
+  {
     "type": "must_not_exist",
     "report_id": 1,
     "forbidden_subjects": [

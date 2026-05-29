@@ -1,0 +1,62 @@
+{% if payload.empty %}
+<section class="empty-state">
+  <h2>尚无经营状况分析结果</h2>
+  <p class="muted">请先运行：</p>
+  <pre>python -m pipeline.analysis.cli.mock_benchmark --report-id {{ report_id }} --seed 42
+python -m pipeline.analysis.cli.run --report-id {{ report_id }}</pre>
+</section>
+{% else %}
+{% if payload.disclaimer %}
+<div class="disclaimer-bar">{{ payload.disclaimer }}</div>
+{% endif %}
+
+<section class="analysis-summary">
+  <h2>总览</h2>
+  <p>{{ payload.summary }}</p>
+  <div class="stats-row">
+    <span class="stat-chip">{{ payload.stats.flag_count }} 项关注</span>
+    <span class="stat-chip">已解释 {{ payload.stats.explained_count }}</span>
+    <span class="stat-chip">未解释 {{ payload.stats.unexplained_count }}</span>
+    {% if payload.benchmark_source %}
+    <span class="stat-chip">基准: {{ payload.benchmark_source }}</span>
+    {% endif %}
+  </div>
+</section>
+
+{% for category in payload.categories %}
+<section class="flag-category">
+  <h3>{{ category.label }} ({{ category.flags|length }})</h3>
+  <div class="flag-list">
+    {% for flag in category.flags %}
+    <article class="flag-card severity-{{ flag.severity }}">
+      <div class="flag-card-head">
+        <span class="severity-badge">{{ flag.severity_label }}</span>
+        <strong>{{ flag.item_name }}</strong>
+        <span class="muted">{{ flag.period_label }} · {{ flag.rule_id }}</span>
+      </div>
+      <p class="flag-summary">{{ flag.summary }}</p>
+      <div class="flag-metrics">
+        {% if flag.metric_value != "—" %}<span>指标: {{ flag.metric_value }}</span>{% endif %}
+        {% if flag.benchmark_value != "—" %}<span>基准: {{ flag.benchmark_value }}</span>{% endif %}
+        {% if flag.delta != "—" %}<span>差值: {{ flag.delta }}</span>{% endif %}
+      </div>
+      {% if flag.explanations %}
+      <div class="flag-explanations">
+        <h4>管理层解释</h4>
+        {% for expl in flag.explanations %}
+        <div class="expl-block">
+          {% if expl.citation %}<p class="expl-cite">{{ expl.citation }}</p>{% endif %}
+          {% if expl.reason %}<p class="expl-reason">{{ expl.reason }}</p>{% endif %}
+          {% if expl.snippet %}<p class="expl-snippet">{{ expl.snippet }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted">未找到 MD&A 明确解释</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+{% endif %}

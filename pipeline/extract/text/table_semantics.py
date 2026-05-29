@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass, field
 from typing import Iterator
 
 SUMMARY_LABELS = frozenset({"合计", "小计", "总计", "-", "—", ""})
@@ -176,6 +177,119 @@ def is_summary_row(name: str) -> bool:
 def is_role_label(name: str) -> bool:
     text = str(name).strip()
     return text in ROLE_LABELS or any(text == label for label in ROLE_LABELS)
+
+
+def split_role_titles(text: str) -> list[str]:
+    raw = str(text).strip()
+    if not raw:
+        return []
+    return [part.strip() for part in re.split(r"[、,，/]", raw) if part.strip()]
+
+
+def is_known_role_title(text: str) -> bool:
+    token = str(text).strip()
+    if not token:
+        return False
+    if is_role_label(token):
+        return True
+    role_markers = ("董事", "监事", "总经理", "总裁", "秘书", "总监", "首席")
+    return any(marker in token for marker in role_markers)
+
+
+@dataclass
+class RosterRecord:
+    name: str
+    titles: list[str] = field(default_factory=list)
+    gender: str = ""
+    status: str = ""
+
+
+def _collect_title_tokens(raw: str) -> list[str]:
+    return [part for part in split_role_titles(raw) if is_known_role_title(part)]
+
+
+def _is_valid_roster_main_row(name: str, gender: str, status: str) -> bool:
+    if not looks_like_person_name(name):
+        return False
+    if not gender and not status:
+        return False
+    if not gender and status in {"现任", "离任"}:
+        return False
+    return True
+
+
+def _is_roster_continuation_row(
+    name: str,
+    title: str,
+    gender: str,
+    status: str,
+    *,
+    current: RosterRecord | None,
+) -> bool:
+    if current is None or looks_like_person_name(name):
+        return False
+    if is_role_label(name):
+        return True
+    if title and is_role_label(title) and not gender and not status:
+        return True
+    if not name.strip() and _collect_title_tokens(title):
+        return True
+    return False
+
+
+def _continuation_titles(name: str, title: str) -> list[str]:
+    if is_role_label(name):
+        return [name.strip()]
+    return _collect_title_tokens(title)
+
+
+def iter_roster_records(
+    headers: list[str],
+    rows: list[list[str]],
+    col_map: dict[str, int],
+) -> Iterator[RosterRecord]:
+    name_idx = col_map.get("name")
+    title_idx = col_map.get("title")
+    if name_idx is None or title_idx is None:
+        return
+
+    def cell(row: list[str], idx: int | None) -> str:
+        if idx is None or idx >= len(row):
+            return ""
+        return str(row[idx]).strip()
+
+    current: RosterRecord | None = None
+
+    for row in iter_data_rows(headers, rows, col_map):
+        name = cell(row, name_idx)
+        title = cell(row, title_idx)
+        gender = cell(row, col_map.get("gender"))
+        status = cell(row, col_map.get("status"))
+
+        if is_summary_row(name):
+            continue
+
+        if _is_roster_continuation_row(name, title, gender, status, current=current):
+            for extra_title in _continuation_titles(name, title):
+                if extra_title not in current.titles:
+                    current.titles.append(extra_title)
+            continue
+
+        if current is not None:
+            yield current
+            current = None
+
+        if not _is_valid_roster_main_row(name, gender, status):
+            continue
+
+        titles = _collect_title_tokens(title)
+        if not titles and title:
+            titles = [title]
+
+        current = RosterRecord(name=name, titles=titles, gender=gender, status=status)
+
+    if current is not None:
+        yield current
 
 
 def is_accounting_term(name: str) -> bool:

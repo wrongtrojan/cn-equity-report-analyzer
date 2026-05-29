@@ -1,0 +1,60 @@
+version: "1.0"
+
+watchlist:
+  kpi:
+    - 营业总收入
+    - 营业收入
+    - 归属于上市公司股东的净利润
+    - 归属于上市公司股东的扣除非经常性损益的净利润
+    - 经营活动产生的现金流量净额
+    - 基本每股收益
+    - 加权平均净资产收益率
+    - 资产总额
+    - 资产总计
+    - 归属于上市公司股东的净资产
+  income:
+    - 营业总收入
+    - 营业收入
+    - 营业成本
+    - 归属于上市公司股东的净利润
+
+rules:
+  yoy_spike:
+    threshold: 30
+    severity: medium
+    min_base_amount: 100000000
+  yoy_plunge:
+    threshold: -30
+    severity: high
+    min_base_amount: 100000000
+  yoy_sign_flip:
+    severity: medium
+  margin_shift:
+    delta_pp: 10
+    severity: medium
+  cash_profit_divergence:
+    profit_yoy_min: 20
+    cashflow_yoy_max: 0
+    severity: medium
+  quarter_volatility:
+    qoq_threshold: 40
+    severity: medium
+  industry_outlier_high:
+    margin_pp: 0
+    severity: medium
+  industry_outlier_low:
+    margin_pp: 0
+    severity: medium
+
+benchmark:
+  default_provider: mock
+  fallback_to_mock: true
+  mock_seed: 42
+  disclaimer: "行业基准为模拟数据，非真实同业统计，仅供参考。"
+
+explainer:
+  section_keys:
+    - mda
+    - key_financials
+  top_k: 5
+  min_relevance: 0.35

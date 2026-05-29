@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/report.css" />
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    {% include "partials/header_nav.html.j2" %}
+    <div class="stats-row header-stats">
+      <span class="stat-chip">{{ stats.entity_count }} 实体</span>
+      <span class="stat-chip">{{ stats.relation_count }} 关系</span>
+    </div>
+
+    <nav id="tab-bar" class="tab-bar" aria-label="关系类型"></nav>
+
+    <main class="content-grid">
+      <section class="graph-card">
+        <div class="graph-toolbar">
+          <div>
+            <p id="view-description" class="view-description"></p>
+            <p id="graph-status" class="graph-status"></p>
+          </div>
+          <div id="graph-legend" class="graph-legend"></div>
+        </div>
+        <div id="graph"></div>
+      </section>
+
+      <aside class="evidence-card-panel">
+        <h2>关系证据</h2>
+        <p class="muted">点击图谱中的关系边查看证据片段。</p>
+        <div id="evidence-panel"></div>
+      </aside>
+    </main>
+  </div>
+
+  <script id="report-graph-data" type="application/json">{{ graph_json }}</script>
+  <script src="static/js/graph_theme.js"></script>
+  <script src="static/js/graph_component.js"></script>
+</body>
+</html>

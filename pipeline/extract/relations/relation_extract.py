@@ -12,10 +12,10 @@ from pipeline.extract.contracts import (
     Section,
 )
 from pipeline.extract.text.table_semantics import (
-    is_role_label,
     is_summary_row,
     is_valid_share_ratio,
     iter_data_rows,
+    iter_roster_records,
     looks_like_org_name,
     looks_like_person_name,
     resolve_column_map,
@@ -157,6 +157,18 @@ def extract_shareholders_top10(
         )
 
 
+def _normalize_executive_title(text: str) -> str | None:
+    raw = str(text).strip()
+    if not raw:
+        return None
+    for title in EXECUTIVE_TITLES + DIRECTOR_TITLES:
+        if title in raw:
+            return title
+    if "监事" in raw:
+        return "监事"
+    return None
+
+
 def extract_controller(
     table: ParsedTable,
     company: ExtractedEntity,
@@ -166,9 +178,13 @@ def extract_controller(
     col_map = resolve_column_map(
         table.headers,
         table.rows,
-        {"name": ("控股股东姓名", "实际控制人姓名", "姓名")},
+        {
+            "name": ("控股股东姓名", "实际控制人姓名", "姓名"),
+            "occupation": ("主要职业及职务", "职务", "担任的职务"),
+        },
     )
     name_idx = col_map.get("name")
+    occupation_idx = col_map.get("occupation")
 
     for row in iter_data_rows(table.headers, table.rows, col_map):
         name = _cell(row, name_idx) if name_idx is not None else _cell(row, 0)
@@ -178,6 +194,7 @@ def extract_controller(
             continue
 
         subject = _entity(registry, name, "person")
+        occupation = _cell(row, occupation_idx)
         source_key = _relation_key("actual_controller_of", subject.entity_key, company.entity_key, table.table_seq)
         _add_relation(
             relations,
@@ -196,13 +213,48 @@ def extract_controller(
                         section_key=table.section_key,
                         page_num=table.page_num,
                         table_seq=table.table_seq,
-                        snippet=name,
+                        snippet=" | ".join(x for x in [name, occupation] if x),
                         attrs={"table_title": table.table_title},
                     )
                 ],
             ),
             table_type=table.table_type_guess,
         )
+
+        normalized_title = _normalize_executive_title(occupation) if occupation else None
+        if normalized_title:
+            exec_source_key = _relation_key(
+                "executive_of",
+                subject.entity_key,
+                company.entity_key,
+                table.table_seq,
+                normalized_title,
+            )
+            _add_relation(
+                relations,
+                ExtractedRelation(
+                    relation_type="executive_of",
+                    subject_key=subject.entity_key,
+                    subject_name=subject.name,
+                    subject_type=subject.entity_type,
+                    object_key=company.entity_key,
+                    object_name=company.name,
+                    object_type=company.entity_type,
+                    attrs={"title": normalized_title, "source": "controller_info"},
+                    source_key=exec_source_key,
+                    evidence=[
+                        RelationEvidence(
+                            evidence_type="table_row",
+                            section_key=table.section_key,
+                            page_num=table.page_num,
+                            table_seq=table.table_seq,
+                            snippet=f"{name} | {occupation}",
+                            attrs={"table_title": table.table_title},
+                        )
+                    ],
+                ),
+                table_type=table.table_type_guess,
+            )
         break
 
 
@@ -222,65 +274,54 @@ def extract_directors_roster(
             "gender": ("性别",),
         },
     )
-    name_idx = col_map.get("name")
-    title_idx = col_map.get("title")
-    if name_idx is None or title_idx is None:
+    if col_map.get("name") is None or col_map.get("title") is None:
         return
 
-    seen: dict[tuple[str, str], ExtractedRelation] = {}
-
-    for row in iter_data_rows(table.headers, table.rows, col_map):
-        name = _cell(row, name_idx)
-        title = _cell(row, title_idx)
-        gender = _cell(row, col_map.get("gender"))
-        status = _cell(row, col_map.get("status"))
-
-        if is_summary_row(name) or is_role_label(name) or not title:
-            continue
-        if not looks_like_person_name(name):
-            continue
-        if not gender and not status:
-            continue
-        if not gender and status in {"现任", "离任"}:
+    for record in iter_roster_records(table.headers, table.rows, col_map):
+        if not record.titles:
             continue
 
-        relation_type = _classify_role(title)
-        subject = _entity(registry, name, "person", title=title)
-        attrs = {"title": title}
-        if status:
-            attrs["status"] = status
+        subject = _entity(registry, record.name, "person", title=record.titles[0])
+        combined_title = "、".join(record.titles)
+        shared_attrs: dict[str, str] = {}
+        if record.status:
+            shared_attrs["status"] = record.status
 
-        dedup_key = (subject.entity_key, relation_type)
-        source_key = _relation_key(relation_type, subject.entity_key, company.entity_key, table.table_seq, title)
-        rel = ExtractedRelation(
-            relation_type=relation_type,
-            subject_key=subject.entity_key,
-            subject_name=subject.name,
-            subject_type=subject.entity_type,
-            object_key=company.entity_key,
-            object_name=company.name,
-            object_type=company.entity_type,
-            attrs=attrs,
-            source_key=source_key,
-            evidence=[
-                RelationEvidence(
-                    evidence_type="table_row",
-                    section_key=table.section_key,
-                    page_num=table.page_num,
-                    table_seq=table.table_seq,
-                    snippet=f"{name} | {title}",
-                    attrs={"table_title": table.table_title},
-                )
-            ],
-        )
-        if not validate_relation(rel, table_type=table.table_type_guess):
-            continue
-
-        existing = seen.get(dedup_key)
-        if existing is None or len(attrs) > len(existing.attrs):
-            seen[dedup_key] = rel
-
-    relations.update({rel.source_key: rel for rel in seen.values()})
+        for title in record.titles:
+            relation_type = _classify_role(title)
+            attrs = {"title": title, **shared_attrs}
+            source_key = _relation_key(
+                relation_type,
+                subject.entity_key,
+                company.entity_key,
+                table.table_seq,
+                title,
+            )
+            _add_relation(
+                relations,
+                ExtractedRelation(
+                    relation_type=relation_type,
+                    subject_key=subject.entity_key,
+                    subject_name=subject.name,
+                    subject_type=subject.entity_type,
+                    object_key=company.entity_key,
+                    object_name=company.name,
+                    object_type=company.entity_type,
+                    attrs=attrs,
+                    source_key=source_key,
+                    evidence=[
+                        RelationEvidence(
+                            evidence_type="table_row",
+                            section_key=table.section_key,
+                            page_num=table.page_num,
+                            table_seq=table.table_seq,
+                            snippet=f"{record.name} | {combined_title}",
+                            attrs={"table_title": table.table_title},
+                        )
+                    ],
+                ),
+                table_type=table.table_type_guess,
+            )
 
 
 def extract_subsidiaries(

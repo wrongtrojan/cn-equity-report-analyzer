@@ -1,0 +1,220 @@
+{% if payload.empty %}
+<section class="empty-state">
+  <h2>尚无经营状况分析结果</h2>
+  <p class="muted">请先运行：</p>
+  <pre>python -m pipeline.analysis.cli.mock_benchmark --report-id {{ report_id }} --seed 42
+python -m pipeline.analysis.cli.run --report-id {{ report_id }}</pre>
+</section>
+{% else %}
+{% if payload.disclaimer %}
+<div class="disclaimer-bar">{{ payload.disclaimer }}</div>
+{% endif %}
+
+<section class="overview-dashboard">
+  <h2>总览</h2>
+  <p class="dashboard-headline">{{ payload.overview_dashboard.headline }}</p>
+  <div class="metric-cards">
+    <article class="metric-card">
+      <span class="metric-card-label">需关注</span>
+      <strong class="metric-card-value">{{ payload.stats.flag_count }}</strong>
+      <span class="metric-card-sub">
+        高 {{ payload.severity_stats.high or 0 }} · 中 {{ payload.severity_stats.medium or 0 }} · 低 {{ payload.severity_stats.low or 0 }}
+      </span>
+    </article>
+    <article class="metric-card">
+      <span class="metric-card-label">解释覆盖</span>
+      <strong class="metric-card-value">{{ payload.overview_dashboard.explained_ratio }}</strong>
+      <span class="metric-card-sub">未解释 {{ payload.stats.unexplained_count }}</span>
+    </article>
+    <article class="metric-card">
+      <span class="metric-card-label">KPI 覆盖</span>
+      <strong class="metric-card-value">{{ payload.stats.snapshot_count }}</strong>
+      <span class="metric-card-sub">
+        异常 {{ payload.overview_dashboard.kpi_health.flag }} · 关注 {{ payload.overview_dashboard.kpi_health.watch }} · 正常 {{ payload.overview_dashboard.kpi_health.normal }}
+      </span>
+    </article>
+  </div>
+  {% if payload.overview_dashboard.category_stats %}
+  <div class="category-chip-row">
+    {% for cat in payload.overview_dashboard.category_stats %}
+    <span class="category-chip">{{ cat.label }} ({{ cat.count }})</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if payload.overview_dashboard.top_flags %}
+  <div class="top-flag-cards">
+    {% for flag in payload.overview_dashboard.top_flags %}
+    <a class="top-flag-card severity-{{ flag.severity }}" href="#flags">
+      <span class="severity-badge">{{ flag.severity_label }}</span>
+      <strong>{{ flag.item_name }}</strong>
+      <span class="rule-label">{{ flag.rule_label }}</span>
+      <p>{{ flag.summary }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <p class="sr-only summary-text">{{ payload.summary }}</p>
+  {% if payload.benchmark_source %}
+  <div class="stats-row dashboard-meta">
+    <span class="stat-chip">基准: {{ payload.benchmark_source }}</span>
+  </div>
+  {% endif %}
+</section>
+
+<nav class="anchor-nav" aria-label="页面锚点">
+  <a href="#kpi-detail">KPI 详情</a>
+  {% if payload.watch_rows %}<a href="#watch-items">关注指标</a>{% endif %}
+  <a href="#flags">需关注事项</a>
+</nav>
+
+{% if payload.snapshot_groups %}
+<section class="kpi-detail-section" id="kpi-detail">
+  <h2>KPI 详情（含行业对标）</h2>
+  {% for group in payload.snapshot_groups %}
+  <div class="kpi-group">
+    <h3>{{ group.label }}</h3>
+    <table class="kpi-table kpi-detail-table">
+      <thead>
+        <tr>
+          <th>科目</th>
+          <th>本期</th>
+          <th>上期</th>
+          <th>同比</th>
+          <th>行业 p50</th>
+          <th>行业区间</th>
+          <th>vs 行业</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in group.rows %}
+        <tr class="status-row status-{{ row.status }}">
+          <td>{{ row.item_name }}{% if row.derived %} <span class="muted">(派生)</span>{% endif %}</td>
+          <td>{{ row.current_value }}</td>
+          <td>{{ row.prior_value }}</td>
+          <td class="yoy-cell yoy-{{ row.yoy_direction }}">{{ row.yoy_pct }}</td>
+          <td>{{ row.industry_p50 }}</td>
+          <td>{{ row.industry_range }}</td>
+          <td>
+            {% if row.industry_marker_pct is not none %}
+            <div class="industry-bar" title="{{ row.industry_label }}">
+              <span class="industry-range"></span>
+              <span class="industry-marker" style="left: {{ row.industry_marker_pct }}%"></span>
+            </div>
+            <span class="industry-pos-label">{{ row.industry_label }}</span>
+            {% else %}
+            <span class="industry-pos-label muted">{{ row.industry_label or "—" }}</span>
+            {% endif %}
+          </td>
+          <td><span class="status-badge">{{ row.status_label }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if payload.watch_rows %}
+<section class="watch-section" id="watch-items">
+  <h2>关注指标</h2>
+  <p class="muted section-hint">同比变动超过 15%，尚未触发异常规则。</p>
+  <table class="kpi-table">
+    <thead>
+      <tr>
+        <th>科目</th>
+        <th>本期</th>
+        <th>同比</th>
+        <th>状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.watch_rows %}
+      <tr class="status-row status-watch">
+        <td>{{ row.item_name }}</td>
+        <td>{{ row.current_value }}</td>
+        <td class="yoy-cell yoy-{{ row.yoy_direction }}">{{ row.yoy_pct }}</td>
+        <td><span class="status-badge">{{ row.status_label }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<section class="flags-section" id="flags">
+  <h2>需关注事项</h2>
+  {% if payload.categories %}
+  {% for category in payload.categories %}
+  <div class="flag-category">
+    <h3 class="flag-category-head">{{ category.label }} ({{ category.flags|length }})</h3>
+    <div class="flag-list">
+      {% for flag in category.flags %}
+      <article class="flag-card flag-card-v2 severity-{{ flag.severity }}{% if flag.is_industry_flag %} industry-flag{% endif %}">
+        <div class="flag-card-head">
+          <span class="severity-badge">{{ flag.severity_label }}</span>
+          <strong>{{ flag.item_name }}</strong>
+          {% if flag.direction_label %}<span class="direction-badge">{{ flag.direction_label }}</span>{% endif %}
+          <span class="rule-label">{{ flag.rule_label }}</span>
+        </div>
+        <p class="flag-summary">{{ flag.summary }}</p>
+        {% if flag.metrics %}
+        <dl class="metric-dl">
+          {% for m in flag.metrics %}
+          <div class="metric-dl-item">
+            <dt>{{ m.label }}</dt>
+            <dd>{{ m.value }}</dd>
+          </div>
+          {% endfor %}
+        </dl>
+        {% endif %}
+        <div class="flag-explanations">
+          <h4>管理层解释</h4>
+          {% if flag.primary_explanation %}
+            {% if not flag.has_direct_explanation and flag.primary_explanation.type != 'none' %}
+            <p class="expl-hint">年报未直接说明原因，以下为相关背景。</p>
+            {% elif flag.primary_explanation.type == 'none' %}
+            <p class="expl-hint expl-hint-warn">年报未直接说明原因</p>
+            {% endif %}
+            <blockquote class="expl-quote">
+              {% if flag.primary_explanation.type_label %}
+              <span class="expl-type-badge">{{ flag.primary_explanation.type_label }}</span>
+              {% endif %}
+              {% if flag.primary_explanation.citation %}
+              <cite class="expl-cite">{{ flag.primary_explanation.citation }}</cite>
+              {% endif %}
+              {% if flag.primary_explanation.reason %}
+              <p class="expl-reason">{{ flag.primary_explanation.reason }}</p>
+              {% endif %}
+              {% if flag.primary_explanation.snippet %}
+              <p class="expl-snippet">{{ flag.primary_explanation.snippet }}</p>
+              {% endif %}
+            </blockquote>
+            {% if flag.other_explanations %}
+            <details class="expl-collapsible">
+              <summary>其他相关段落 ({{ flag.other_explanations|length }})</summary>
+              {% for expl in flag.other_explanations %}
+              <blockquote class="expl-quote expl-secondary">
+                <span class="expl-type-badge">{{ expl.type_label }}</span>
+                {% if expl.citation %}<cite class="expl-cite">{{ expl.citation }}</cite>{% endif %}
+                {% if expl.reason %}<p class="expl-reason">{{ expl.reason }}</p>{% endif %}
+                {% if expl.snippet %}<p class="expl-snippet">{{ expl.snippet }}</p>{% endif %}
+              </blockquote>
+              {% endfor %}
+            </details>
+            {% endif %}
+          {% else %}
+          <p class="muted">未找到 MD&A 明确解释</p>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="muted">未发现需特别关注的异常指标。</p>
+  {% endif %}
+</section>
+{% endif %}

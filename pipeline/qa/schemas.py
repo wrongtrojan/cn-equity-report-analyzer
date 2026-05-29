@@ -35,8 +35,18 @@ class EvidenceItem(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+ConfidenceLevel = Literal["high", "medium", "low", "none"]
+
+
+class AnswerConfidence(BaseModel):
+    level: ConfidenceLevel = "none"
+    score: float = Field(default=0.0, ge=0.0, le=1.0)
+    reason: str = ""
+
+
 class QAResponse(BaseModel):
     answer: str
+    confidence: AnswerConfidence = Field(default_factory=AnswerConfidence)
     citations: list[str] = Field(default_factory=list)
     normalized: NormalizedQuery
     evidence: list[EvidenceItem] = Field(default_factory=list)

@@ -111,7 +111,9 @@
           <span class="relation-arrow">${escapeHtml(edge.label)}</span>
           <strong>${escapeHtml(edge.object_name)}</strong>
         </div>
-        <p class="muted">来源 ${escapeHtml(edge.source || "rule")} · 置信度 ${edge.confidence ?? 1}</p>
+        <p class="muted">来源 ${escapeHtml(edge.source || "rule")} · 置信度 ${edge.confidence ?? 1}${
+          edge.merged_count ? ` · 合并 ${edge.merged_count} 条关系` : ""
+        }</p>
       </div>
       ${attrRows ? `<table class="attr-table"><tbody>${attrRows}</tbody></table>` : ""}
       <div class="evidence-list">${evidenceHtml}</div>`;
@@ -142,7 +144,9 @@
     destroyNetwork();
 
     const nodeItems = view.nodes.map((node) => theme.buildNodeVis(node));
-    const edgeItems = view.edges.map((edge) => theme.buildEdgeVis(edge, relationType));
+    const edgeItems = theme.spreadParallelEdges(
+      view.edges.map((edge) => theme.buildEdgeVis(edge, relationType))
+    );
     const laidOutNodes = theme.layoutNodes(relationType, nodeItems, edgeItems);
 
     const nodes = new vis.DataSet(laidOutNodes);
@@ -150,7 +154,7 @@
     network = new vis.Network(graphContainer, { nodes, edges }, theme.getNetworkOptions());
 
     const fitGraph = () => {
-      network.fit({ padding: 48, animation: { duration: 280, easingFunction: "easeInOutQuad" } });
+      network.fit({ padding: 64, animation: { duration: 280, easingFunction: "easeInOutQuad" } });
       network.off("afterDrawing", fitGraph);
     };
     network.on("afterDrawing", fitGraph);

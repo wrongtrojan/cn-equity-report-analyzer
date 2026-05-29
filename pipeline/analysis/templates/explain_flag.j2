@@ -1,0 +1,13 @@
+请判断以下 MD&A 片段是否解释了指标异常。
+
+指标摘要：
+{{ flag_summary }}
+
+MD&A 片段：
+{{ chunk_text }}
+
+只输出 JSON：
+{
+  "explanation_type": "direct|indirect|none",
+  "reason": "一句中文说明"
+}

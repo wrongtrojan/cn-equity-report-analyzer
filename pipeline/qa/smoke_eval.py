@@ -5,7 +5,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .pipeline import QAPipeline
+from .core.engine import QAPipeline
 
 DEFAULT_GOLDEN = Path(__file__).resolve().parent / "eval" / "golden_questions.json"
 DEFAULT_OUTPUT = Path(__file__).resolve().parent / "eval" / "smoke_results.json"
@@ -18,8 +18,20 @@ REFERENCE_FIELDS = (
     "expected_granularity",
     "expected_period_labels",
     "min_evidence",
+    "min_confidence_level",
+    "max_confidence_level",
     "notes",
 )
+
+_LEVEL_ORDER = {"none": 0, "low": 1, "medium": 2, "high": 3}
+
+
+def _level_at_least(actual: str, minimum: str) -> bool:
+    return _LEVEL_ORDER.get(actual, 0) >= _LEVEL_ORDER.get(minimum, 0)
+
+
+def _level_at_most(actual: str, maximum: str) -> bool:
+    return _LEVEL_ORDER.get(actual, 0) <= _LEVEL_ORDER.get(maximum, 0)
 
 
 def _check_case(case: dict, resp) -> tuple[bool, list[str]]:
@@ -55,6 +67,18 @@ def _check_case(case: dict, resp) -> tuple[bool, list[str]]:
     if min_evidence is not None and len(resp.evidence) < min_evidence:
         issues.append(f"evidence count {len(resp.evidence)} < min_evidence {min_evidence}")
 
+    min_confidence_level = case.get("min_confidence_level")
+    if min_confidence_level and not _level_at_least(resp.confidence.level, min_confidence_level):
+        issues.append(
+            f"confidence level {resp.confidence.level} < min_confidence_level {min_confidence_level}"
+        )
+
+    max_confidence_level = case.get("max_confidence_level")
+    if max_confidence_level and not _level_at_most(resp.confidence.level, max_confidence_level):
+        issues.append(
+            f"confidence level {resp.confidence.level} > max_confidence_level {max_confidence_level}"
+        )
+
     return len(issues) == 0, issues
 
 
@@ -66,6 +90,7 @@ def _build_result(case: dict, resp, *, run_auto_check: bool) -> dict:
         "query": case["query"],
         "reference": reference,
         "answer": resp.answer,
+        "confidence": resp.confidence.model_dump(),
         "citations": resp.citations,
         "normalized": resp.normalized.model_dump(),
         "evidence": [item.model_dump() for item in resp.evidence],

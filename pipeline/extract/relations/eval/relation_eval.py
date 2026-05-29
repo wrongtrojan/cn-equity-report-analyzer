@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-from pipeline.ingest.db import connect
+from pipeline.db import connect
 
 EVAL_PATH = Path(__file__).resolve().parent / "golden_relations.json"
 
@@ -50,11 +50,15 @@ def _check_must_have_attrs(cur, report_id: int, case: dict) -> bool:
     if not rows:
         return False
     required = case.get("attrs_contains", [])
+    attrs_match = case.get("attrs_match", {})
     for (attrs,) in rows:
         if not isinstance(attrs, dict):
             continue
-        if all(key in attrs and attrs[key] for key in required):
-            return True
+        if not all(key in attrs and attrs[key] for key in required):
+            continue
+        if attrs_match and not all(attrs.get(k) == v for k, v in attrs_match.items()):
+            continue
+        return True
     return False
 
 

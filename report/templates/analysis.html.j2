@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/report.css" />
+</head>
+<body>
+  <div class="page-shell">
+    {% set meta = payload.meta %}
+    {% include "partials/header_nav.html.j2" %}
+    <main class="analysis-page">
+      {% include "partials/operating_detail.html.j2" %}
+    </main>
+  </div>
+  <script src="static/js/analysis_view.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<section class="profile-section">
+  <div class="section-head">
+    <h2>公司概况</h2>
+    <div class="stats-row">
+      <span class="stat-chip">{{ meta.stock_code }}</span>
+      {% if meta.industry %}<span class="stat-chip">{{ meta.industry }}</span>{% endif %}
+      <span class="stat-chip">{{ meta.report_year }} 年度</span>
+      {% if profile.profile_source == 'qa' %}<span class="stat-chip">QA</span>{% endif %}
+    </div>
+  </div>
+
+  <div class="profile-cards">
+    <div class="profile-card">
+      <span class="profile-card-label">注册地址</span>
+      <span class="profile-card-value">{{ profile.registered_address or "—" }}</span>
+    </div>
+    <div class="profile-card">
+      <span class="profile-card-label">办公地址</span>
+      <span class="profile-card-value">{{ profile.office_address or "—" }}</span>
+    </div>
+    <div class="profile-card">
+      <span class="profile-card-label">控股股东 / 实控人</span>
+      <span class="profile-card-value">{{ profile.controller or "—" }}</span>
+    </div>
+    <div class="profile-card">
+      <span class="profile-card-label">法定代表人</span>
+      <span class="profile-card-value">{{ profile.legal_representative or "—" }}</span>
+    </div>
+  </div>
+
+  {% if profile.intro_blocks %}
+  <div class="profile-content-panel intro-panel">
+    <h3>公司简介</h3>
+    <div class="intro-body">
+      {% for block in profile.intro_blocks %}
+        {% if block.kind == 'paragraph' %}
+        <p class="intro-paragraph">{{ block.text }}</p>
+        {% elif block.kind == 'list' %}
+          {% if block.ordered %}
+          <ol class="profile-ordered-list">
+            {% for item in block.entries %}
+            <li>
+              {% if item.title and item.body %}
+              <span class="list-item-title">{{ item.title }}</span><span class="list-item-body">{{ item.body }}</span>
+              {% elif item.title %}
+              <span class="list-item-body-only">{{ item.title }}</span>
+              {% else %}
+              <span class="list-item-body-only">{{ item.body }}</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ol>
+          {% else %}
+          <ul class="profile-bullet-list">
+            {% for item in block.entries %}
+            <li>
+              {% if item.title and item.body %}
+              <span class="list-item-title">{{ item.title }}</span><span class="list-item-body">{{ item.body }}</span>
+              {% elif item.title %}
+              <span class="list-item-body-only">{{ item.title }}</span>
+              {% else %}
+              <span class="list-item-body-only">{{ item.body }}</span>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% elif profile.intro %}
+  <div class="profile-content-panel intro-panel">
+    <h3>公司简介</h3>
+    <p class="intro-paragraph">{{ profile.intro }}</p>
+  </div>
+  {% endif %}
+
+  {% if profile.main_business_items %}
+  <div class="profile-content-panel main-business-panel">
+    <h3>主营业务</h3>
+    <ol class="profile-ordered-list business-ordered-list">
+      {% for item in profile.main_business_items %}
+      <li>
+        {% if item.title and item.body %}
+        <span class="list-item-title">{{ item.title }}</span><span class="list-item-body">{{ item.body }}</span>
+        {% elif item.title %}
+        <span class="list-item-body-only">{{ item.title }}</span>
+        {% else %}
+        <span class="list-item-body-only">{{ item.body }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+
+  {% if profile.subsidiaries %}
+  <div class="profile-content-panel subsidiaries-panel">
+    <h3>主要子公司{% if profile.subsidiary_count %} <span class="muted">({{ profile.subsidiary_count }})</span>{% endif %}</h3>
+    <ol class="profile-ordered-list subsidiary-ordered-list">
+      {% for sub in profile.subsidiaries %}
+      <li class="subsidiary-list-item">
+        <span class="list-item-title">{{ sub.name }}</span>
+        <span class="list-item-body muted">{{ sub.main_business }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+</section>
+
+<section class="kpi-section">
+  <h2>核心财务指标</h2>
+  {% if payload.kpi_rows %}
+  <table class="kpi-table">
+    <thead>
+      <tr>
+        <th>科目</th>
+        <th>本期</th>
+        <th>上期</th>
+        <th>同比</th>
+        <th>状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.kpi_rows %}
+      <tr class="status-row status-{{ row.status }}{% if row.status == 'flag' %} kpi-flag-row{% endif %}"{% if row.status == 'flag' %} data-href="../analysis/index.html#flags"{% endif %}>
+        <td>{{ row.item_name }}</td>
+        <td>{{ row.current_value }}</td>
+        <td>{{ row.prior_value }}</td>
+        <td class="yoy-cell yoy-{{ row.yoy_direction }}">{{ row.yoy_pct }}</td>
+        <td><span class="status-badge">{{ row.status_label }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">暂无 KPI 数据，请先完成结构化入库。</p>
+  {% endif %}
+
+  {% if payload.derived_kpi_rows %}
+  <h3 class="kpi-subhead">派生指标</h3>
+  <table class="kpi-table kpi-derived-table">
+    <thead>
+      <tr>
+        <th>科目</th>
+        <th>本期</th>
+        <th>上期</th>
+        <th>同比</th>
+        <th>状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.derived_kpi_rows %}
+      <tr class="status-row status-{{ row.status }}">
+        <td>{{ row.item_name }}</td>
+        <td>{{ row.current_value }}</td>
+        <td>{{ row.prior_value }}</td>
+        <td class="yoy-cell yoy-{{ row.yoy_direction }}">{{ row.yoy_pct }}</td>
+        <td><span class="status-badge">{{ row.status_label }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>

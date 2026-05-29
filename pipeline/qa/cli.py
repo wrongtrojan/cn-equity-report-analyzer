@@ -11,10 +11,10 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING, Iterable
 
 from .config import QA_LLM_MODEL
-from .pipeline import QAPipeline, ReportSummary
+from .core.engine import QAPipeline, ReportSummary
 
 if TYPE_CHECKING:
-    from .pipeline import QASession, Turn
+    from .core.engine import QASession, Turn
     from .schemas import QAResponse
 
 _INTENT_LABELS = {
@@ -48,6 +48,9 @@ class _Style:
 
     def yellow(self, text: str) -> str:
         return self.wrap("33", text)
+
+    def orange(self, text: str) -> str:
+        return self.wrap("38;5;208", text)
 
     def magenta(self, text: str) -> str:
         return self.wrap("35", text)
@@ -108,6 +111,11 @@ def _pad_display(text: str, width: int, align: str = "left") -> str:
     return text + (" " * pad)
 
 
+# CJK line-break: avoid leading/trailing punctuation at wrapped edges.
+_LINE_START_FORBIDDEN = frozenset("，。、；：？！）】》」』\"'%,.;:?!)]»›…—·")
+_LINE_END_FORBIDDEN = frozenset("（【《「『\"'([«‹")
+
+
 def _wrap_display(text: str, max_width: int) -> list[str]:
     if max_width <= 0:
         return [text]
@@ -122,12 +130,22 @@ def _wrap_display(text: str, max_width: int) -> list[str]:
             current_w = 0
             continue
         if current and current_w + ch_w > max_width:
+            if ch in _LINE_START_FORBIDDEN:
+                current.append(ch)
+                lines.append("".join(current))
+                current = []
+                current_w = 0
+                continue
+            pending: list[str] = []
+            while current and current[-1] in _LINE_END_FORBIDDEN:
+                pending.insert(0, current.pop())
+                current_w -= _char_display_width(pending[0])
             lines.append("".join(current))
-            current = [ch]
-            current_w = ch_w
-        else:
-            current.append(ch)
-            current_w += ch_w
+            current = pending + [ch]
+            current_w = sum(_char_display_width(c) for c in current)
+            continue
+        current.append(ch)
+        current_w += ch_w
     if current:
         lines.append("".join(current))
     return lines or [""]
@@ -149,15 +167,37 @@ def _box_bottom(box_width: int) -> str:
     return "└" + ("─" * (box_width - 2)) + "┘"
 
 
-def _box_line(text: str, width: int, style: _Style) -> str:
-    return _box_row(text, width)
+def _print_colored_box(
+    title: str,
+    lines: Iterable[str],
+    style: _Style,
+    width: int,
+    *,
+    accent,
+) -> None:
+    color = accent if style.enabled else (lambda text: text)
+    print(color(_box_top_title(title, width)))
+    for line in lines:
+        print(color(_box_row(line, width)))
+    print(color(_box_bottom(width)))
 
 
 def _print_box(title: str, lines: Iterable[str], style: _Style, width: int) -> None:
-    print(style.dim(_box_top_title(title, width)))
-    for line in lines:
-        print(style.dim(_box_line(line, width, style)))
-    print(style.dim(_box_bottom(width)))
+    _print_colored_box(title, lines, style, width, accent=style.dim)
+
+
+def _confidence_accent(style: _Style, level: str):
+    if not style.enabled:
+        return lambda text: text
+    if level == "high":
+        return style.green
+    if level == "medium":
+        return style.yellow
+    if level == "low":
+        return style.orange
+    if level == "none":
+        return style.dim
+    return style.dim
 
 
 def print_banner(session: QASession, model: str, *, no_color: bool = False) -> None:
@@ -194,7 +234,7 @@ def print_help(*, no_color: bool = False) -> None:
         "  · 前十大股东有哪些？",
         "",
         "系统会先标准化问题，再按意图检索表格/向量证据，最后生成回答。",
-        "引用来源来自检索到的证据，不是模型自行编造。",
+        "检索证据是喂给模型的原始材料；引用出处是按章节页码去重后的索引。",
     ]
     _print_box("帮助", lines, style, _term_width())
 
@@ -212,6 +252,14 @@ def _wrap_answer(text: str, width: int) -> list[str]:
     return lines or ["（无回答）"]
 
 
+_CONFIDENCE_LABELS = {
+    "high": "高",
+    "medium": "中",
+    "low": "低",
+    "none": "无",
+}
+
+
 def print_response(resp: QAResponse, *, elapsed_sec: float | None = None, no_color: bool = False) -> None:
     style = _Style(_use_color(no_color))
     width = _term_width()
@@ -219,19 +267,38 @@ def print_response(resp: QAResponse, *, elapsed_sec: float | None = None, no_col
     evidence_count = len(resp.evidence)
 
     wrapped = _wrap_answer(resp.answer, width=width - 4)
-    _print_box("回答", wrapped, style, width)
+    _print_colored_box("回答", wrapped, style, width, accent=style.cyan)
+
+    conf = resp.confidence
+    conf_label = _CONFIDENCE_LABELS.get(conf.level, conf.level)
+    conf_title = f"置信度 · {conf_label} · {conf.score:.2f}"
+    if conf.reason.strip():
+        conf_lines = _wrap_display(conf.reason.strip(), width - 4)
+    else:
+        conf_lines = ["暂无说明"]
+    _print_colored_box(
+        conf_title,
+        conf_lines,
+        style,
+        width,
+        accent=_confidence_accent(style, conf.level),
+    )
 
     citation_lines: list[str]
     if resp.citations:
         citation_lines = [f"{i}. {c}" for i, c in enumerate(resp.citations, start=1)]
     else:
-        citation_lines = ["暂无引用（未检索到可用证据）"]
+        citation_lines = ["暂无引用出处（未检索到可用证据）"]
 
-    meta = f"引用来源 ({len(resp.citations)}) · {intent}"
-    _print_box(meta, citation_lines, style, width)
+    cite_title = f"引用出处 ({len(resp.citations)}) · {intent}"
+    _print_colored_box(cite_title, citation_lines, style, width, accent=style.blue)
 
     if elapsed_sec is not None:
-        footer = f"证据 {evidence_count} 条 · 耗时 {elapsed_sec:.1f}s"
+        footer = (
+            f"检索证据 {evidence_count} 条 · "
+            f"引用出处 {len(resp.citations)} 处 · "
+            f"耗时 {elapsed_sec:.1f}s"
+        )
         print(style.dim(f"  {footer}"))
     print()
 
@@ -422,6 +489,7 @@ def main() -> int:
                 json.dumps(
                     {
                         "answer": resp.answer,
+                        "confidence": resp.confidence.model_dump(),
                         "citations": resp.citations,
                         "normalized": resp.normalized.model_dump(),
                         "evidence": [x.model_dump() for x in resp.evidence],

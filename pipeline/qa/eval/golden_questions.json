@@ -156,6 +156,8 @@
     "category": "relational",
     "query": "公司董事长是谁",
     "notes": "期望：其实",
+    "expected_keywords": ["其实"],
+    "min_confidence_level": "medium",
     "min_evidence": 1
   },
   {
@@ -196,6 +198,7 @@
     "category": "negative",
     "query": "2022年营业总收入是多少",
     "notes": "期望：拒答/未披露（库中无2022 KPI）",
+    "max_confidence_level": "low",
     "min_evidence": 0
   },
   {
@@ -204,6 +207,7 @@
     "category": "negative",
     "query": "2026年营业总收入是多少",
     "notes": "期望：拒答/未披露（超出报告期）",
+    "max_confidence_level": "low",
     "min_evidence": 0
   }
 ]

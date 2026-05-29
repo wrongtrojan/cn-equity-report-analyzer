@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Callable
 
-from pipeline.ingest.item_aliases import revenue_row_tokens
+from pipeline.item_aliases import revenue_row_tokens
 
 from .table_semantics import headers_text, table_text_blob
 
