@@ -60,10 +60,24 @@ def _relation_key(
     return base
 
 
-def _cell(row: list[str], idx: int | None) -> str:
-    if idx is None or idx >= len(row):
-        return ""
-    return str(row[idx]).strip()
+def semantic_relation_key(relation_type: str, subject_key: str, object_key: str) -> str:
+    """Identity of a relation edge regardless of source/table_seq."""
+    return f"{relation_type}|{subject_key}|{object_key}"
+
+
+def _relation_quality_rank(rel: ExtractedRelation) -> tuple:
+    table_evidence = sum(1 for item in rel.evidence if item.evidence_type == "table_row")
+    return (
+        1 if rel.source == "rule" else 0,
+        rel.confidence,
+        len(rel.attrs or {}),
+        table_evidence,
+    )
+
+
+def prefer_relation(candidate: ExtractedRelation, existing: ExtractedRelation) -> bool:
+    """True if candidate should replace existing for the same semantic edge."""
+    return _relation_quality_rank(candidate) > _relation_quality_rank(existing)
 
 
 def _add_relation(
@@ -74,6 +88,12 @@ def _add_relation(
 ) -> None:
     if validate_relation(rel, table_type=table_type):
         relations[rel.source_key] = rel
+
+
+def _cell(row: list[str], idx: int | None) -> str:
+    if idx is None or idx >= len(row):
+        return ""
+    return str(row[idx]).strip()
 
 
 def _classify_role(title: str) -> str:

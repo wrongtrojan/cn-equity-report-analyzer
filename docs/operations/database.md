@@ -352,7 +352,12 @@ SELECT section_key, chunk_index, LEFT(content, 120) FROM text_chunks WHERE repor
 
 设计说明：[guides/ingestion.md](../guides/ingestion.md)
 
-**`kg_relations.source_key`**：`{relation_type}|{subject_key}|{object_key}|{table_seq}`，同一 report 内唯一。
+**`kg_relations.source_key`**：入库唯一键，格式因来源而异：
+
+- 规则边：`{relation_type}|{subject_key}|{object_key}|{table_seq}`；董监高名册可追加 `|{title}`
+- LLM 边：`...|0|llm`
+
+语义上相同的边（同 `relation_type` + 主体 + 客体）在 LLM 补漏阶段会去重，但规则边仍可按 `title` / `table_seq` 保留多条。
 
 常用验收 SQL：
 

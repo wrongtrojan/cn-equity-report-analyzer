@@ -61,6 +61,17 @@ flowchart TD
 
 设计原则：**表类型驱动、精度优先、规则为主**；LLM 文本补漏为可选（`--refine-text-relations`），须过同一套校验。
 
+#### 关系去重
+
+| 阶段 | 键 | 行为 |
+|------|-----|------|
+| **规则抽取** | `source_key`（含 `table_seq`，董监高名册含 `title`） | 同一 `(relation_type, subject, object)` 可有多条边（如一人兼董事长与总经理 → 两条 `executive_of`） |
+| **LLM 补漏** | 语义键 `relation_type\|subject_key\|object_key` | 若规则边已存在同语义三元组，**不写入** LLM 边；rule 优先于 llm（attrs / 证据更完整） |
+
+实现：`relation_extract.semantic_relation_key` / `prefer_relation`；合并逻辑在 `text_relation_refiner._merge_relations`。
+
+DB 仍按 `(report_id, source_key)` upsert，见 [database.md §知识图谱](../operations/database.md#8-知识图谱表)。
+
 ### 科目归一化（item_aliases）
 
 `pipeline/item_aliases.py` 提供 `normalize_item_name()`，供 extract、QA SQL 检索、analysis 快照、行业基准对齐使用。修改别名后须 `--force` ingest 并重新跑 analysis。

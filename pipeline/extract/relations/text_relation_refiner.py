@@ -8,7 +8,13 @@ from typing import Iterable
 from pipeline.extract.contracts import ExtractedEntity, ExtractedRelation, RelationEvidence, Section
 
 from .llm_client import chat_json, get_client
-from .relation_extract import _entity, _relation_key, normalize_entity_key
+from .relation_extract import (
+    _entity,
+    _relation_key,
+    normalize_entity_key,
+    prefer_relation,
+    semantic_relation_key,
+)
 from .relation_validate import validate_relation
 
 logger = logging.getLogger(__name__)
@@ -64,18 +70,23 @@ def _section_text(sections: list[Section], keys: Iterable[str], max_chars: int =
 
 def _merge_relations(
     registry: dict[str, ExtractedEntity],
-    existing: dict[str, ExtractedRelation],
+    relations_by_source: dict[str, ExtractedRelation],
+    semantic_index: dict[str, ExtractedRelation],
     additions: list[ExtractedRelation],
 ) -> int:
+    """Add LLM relations; skip when an edge with the same semantic triple already exists."""
     added = 0
     for rel in additions:
-        if rel.source_key in existing:
-            continue
         if not validate_relation(rel):
+            continue
+        sem_key = semantic_relation_key(rel.relation_type, rel.subject_key, rel.object_key)
+        existing = semantic_index.get(sem_key)
+        if existing is not None and not prefer_relation(rel, existing):
             continue
         _entity(registry, rel.subject_name, rel.subject_type)
         _entity(registry, rel.object_name, rel.object_type)
-        existing[rel.source_key] = rel
+        relations_by_source[rel.source_key] = rel
+        semantic_index[sem_key] = rel
         added += 1
     return added
 
@@ -93,10 +104,13 @@ def refine_relations_from_text(
         return entities, relations, stats
 
     registry = {e.entity_key: e for e in entities}
-    relation_map = {r.source_key: r for r in relations}
+    relations_by_source = {r.source_key: r for r in relations}
+    semantic_index = {
+        semantic_relation_key(r.relation_type, r.subject_key, r.object_key): r for r in relations
+    }
     text = _section_text(sections, SECTION_KEYS)
     if not text.strip():
-        return list(registry.values()), list(relation_map.values()), stats
+        return list(registry.values()), list(relations_by_source.values()), stats
 
     for relation_type in RELATION_ROUNDS:
         user_prompt = (
@@ -153,6 +167,8 @@ def refine_relations_from_text(
                     ],
                 )
             )
-        stats["added_relations"] += _merge_relations(registry, relation_map, additions)
+        stats["added_relations"] += _merge_relations(
+            registry, relations_by_source, semantic_index, additions
+        )
 
-    return list(registry.values()), list(relation_map.values()), stats
+    return list(registry.values()), list(relations_by_source.values()), stats
